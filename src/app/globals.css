@@ -16,8 +16,21 @@
   }
 }
 
+html,body {
+  margin:0;
+  padding:0;
+  height:100%; /* needed for container min-height */
+
+  font-family:arial,sans-serif;
+  font-size:small;
+}
 body {
   color: rgb(var(--foreground-rgb));
+  
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
   background: linear-gradient(
       to bottom,
       transparent,
