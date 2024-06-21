@@ -1,0 +1,75 @@
+.base-comp{
+    display: flex;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.map-container{
+    background-color: black;
+    position: relative;
+    display: inline-block;
+    width: 85%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.function-list{
+    background-color: #345;
+    position: relative;
+    display: inline-block;
+    height: fit-content;
+    width: 15%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.config-list{
+    background-color: #345;
+    position: absolute;
+    right: -15%;
+    display: block;
+    height: fit-content;
+    width: 15%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.config-list-display{
+    background-color: #345;
+    position: absolute;
+    right: 0%;
+    display: block;
+    height: fit-content;
+    width: 15%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.list-item{
+    border-bottom: 1px solid #fff;
+    color: #fff;
+    width: 100%;
+    line-height: 50px;
+    font-size: 20px;
+    padding-left: 5px;
+    cursor: pointer;
+}
+.close-button{
+    border: 1px solid #fff;
+    color: #fff;
+    background-color: #f00;
+    line-height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    max-width: 30px;
+    text-align: center;
+}
+.list-item::marker {
+    content: '';
+}
