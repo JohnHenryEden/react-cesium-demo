@@ -7,7 +7,7 @@ declare global {
   }
 }
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   Cartesian2,
   Cartesian3,
@@ -103,6 +103,7 @@ export default function MapContainer({
   setPageConfigItemList: Function;
 }) {
   const cesiumContainerRef = useRef<HTMLDivElement>(null);
+  const [pageConfigList, setPageConfigList] = useState(pageConfigItemList)
   useEffect(() => {
       
     window.CESIUM_BASE_URL = "/Cesium";
@@ -130,7 +131,7 @@ export default function MapContainer({
   }, []);
   useEffect(() => {  
     loadPageConfig(viewer, pageConfigItemList);
-  }, [pageConfigItemList])
+  }, [pageConfigItemList, pageConfigList])
   return (
     <div
       id="mapContainer"

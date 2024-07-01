@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
+import { deepClone } from "@/utils/util";
 
 enum InputTypes {
   Color = "color",
@@ -16,7 +17,7 @@ interface Config {
 
 function getConfigItemTemplate(
   configItemList: Array<Config>,
-  setConfigItemList: Function
+  setConfigItemList: Function,
 ) {
     return configItemList.map((item: Config, index: number) => {
         if(item.type.includes("file")){
@@ -26,11 +27,11 @@ function getConfigItemTemplate(
                 <input
                     className="list-input"
                     type={item.type}
-                    value=""
+                    defaultValue=""
                     onChange={(e) => {
-                        debugger
-                        configItemList[index].value = e.target.value;
-                        setConfigItemList(configItemList);
+                        let localList = deepClone(configItemList)
+                        localList[index].value = e.target.value;
+                        setConfigItemList(localList)
                     }}
                 ></input>
                 </div>
@@ -42,17 +43,17 @@ function getConfigItemTemplate(
             <input
             className="list-input"
             type={item.type}
-            value={item.value}
+            defaultValue={item.value}
             onChange={(e) => {
-                configItemList[index].value = e.target.value;
-                setConfigItemList(configItemList);
+                let localList = deepClone(configItemList)
+                localList[index].value = e.target.value;
+                setConfigItemList(configItemList)
             }}
             ></input>
         </div>
         );
     })
 }
-
 export default function ConfigList({
   isDisplay,
   setIsEditDisplay,
@@ -79,9 +80,12 @@ export default function ConfigList({
   }
   let configElements = getConfigItemTemplate(
       configItemList,
-      setConfigItemList
+      setConfigItemList,
     );
-  debugger
+  useEffect(()=> {
+      debugger
+  }, [configItemList])
+
   return (
     <div className={isDisplay ? "config-list-display" : "config-list"}>
       {configElements}
