@@ -54,8 +54,8 @@ function handleDrop(event: any, pageConfigItemList: Array<PageConfigItem>, setPa
       new Cartesian3()
     );
     
-    let icon = defaultBillboardConfigItems.find(i => i.name === "billboard_icon")?.value
-    let color = defaultBillboardConfigItems.find(i => i.name === "billboard_color")?.value
+    let icon:string | undefined = defaultBillboardConfigItems.find(i => i.name === "billboard_icon")?.value.toString()
+    let color:string = defaultBillboardConfigItems.find(i => i.name === "billboard_color")?.value.toString()
     let size = defaultBillboardConfigItems.find(i => i.name === "billboard_size")?.value || 1
     if(typeof size === "string"){
         size = parseInt(size);
@@ -131,7 +131,10 @@ export default function MapContainer({
   }, []);
   useEffect(() => {  
     loadPageConfig(viewer, pageConfigItemList);
-  }, [pageConfigItemList, pageConfigList])
+  }, [pageConfigItemList])
+  useEffect(() => {  
+    loadPageConfig(viewer, pageConfigItemList);
+  }, [pageConfigList])
   return (
     <div
       id="mapContainer"

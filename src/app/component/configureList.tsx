@@ -16,8 +16,10 @@ interface Config {
 }
 
 function getConfigItemTemplate(
+  pageConfigItemList: Array<PageConfigItem>,
   configItemList: Array<Config>,
-  setConfigItemList: Function,
+  setPageConfigItemList: Function,
+  indexInPageConfig: number,
 ) {
     return configItemList.map((item: Config, index: number) => {
         if(item.type.includes("file")){
@@ -29,9 +31,11 @@ function getConfigItemTemplate(
                     type={item.type}
                     defaultValue=""
                     onChange={(e) => {
+                        let fullList = deepClone(pageConfigItemList)
                         let localList = deepClone(configItemList)
                         localList[index].value = e.target.value;
-                        setConfigItemList(localList)
+                        fullList[indexInPageConfig] = localList[index]
+                        setPageConfigItemList(fullList)
                     }}
                 ></input>
                 </div>
@@ -45,9 +49,11 @@ function getConfigItemTemplate(
             type={item.type}
             defaultValue={item.value}
             onChange={(e) => {
-                let localList = deepClone(configItemList)
-                localList[index].value = e.target.value;
-                setConfigItemList(configItemList)
+              let fullList = deepClone(pageConfigItemList)
+              let localList = deepClone(configItemList)
+              localList[index].value = e.target.value;
+              fullList[indexInPageConfig] = localList[index]
+              setPageConfigItemList(fullList)
             }}
             ></input>
         </div>
@@ -79,12 +85,11 @@ export default function ConfigList({
     })
   }
   let configElements = getConfigItemTemplate(
+      pageConfigItemList,
       configItemList,
-      setConfigItemList,
+      setPageConfigItemList,
+      pageConfigItemList.length - 1
     );
-  useEffect(()=> {
-      debugger
-  }, [configItemList])
 
   return (
     <div className={isDisplay ? "config-list-display" : "config-list"}>
