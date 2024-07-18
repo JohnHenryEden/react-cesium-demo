@@ -8,4 +8,11 @@ interface PageConfigItem{
     name: String,
     value: Array<any> | any,
     type: String | null | void | undefined
+    id: String|void|undefined
+}
+
+enum InputTypes {
+    Color = "color",
+    Number = "number",
+    Text = "text",
 }

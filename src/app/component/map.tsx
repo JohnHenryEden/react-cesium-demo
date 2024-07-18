@@ -1,5 +1,7 @@
 "use client";
 import mapPin from "../../../public/assets/map-pin.svg";
+import { v4 as uuidv4 } from 'uuid';
+import Billboard from "./mapComponents/billboard";
 
 declare global {
   interface Window {
@@ -20,22 +22,39 @@ import {
 import "cesium/Build/Cesium/Widgets/widgets.css";
 let viewer: Viewer;
 
-let billboardCollection: BillboardCollection;
+let billboards: Billboard;
 
 let defaultBillboardConfigItems = [{
     name: "billboard_color",
     value: "#ff0000",
-    type: "color"
+    type: "color", id: uuidv4()
 },{
     name: "billboard_icon",
     value: "/assets/map-pin.svg",
-    type: "file"
+    type: "file", id: uuidv4()
 },{
     name: "billboard_size",
     value: 1,
-    type: "number"
+    type: "number", id: uuidv4()
 }]
 
+enum ComponentTypes {
+  BILLBOARD = "BILLBOARD",
+  POINT = "POINT",
+  LINESTRING = "LINESTRING",
+  POLYGON = "POLYGON",
+  IMAGE_POPUP = "IMAGE_POPUP",
+  HTML_POPUP = "HTML_POPUP",
+  GLTF = "GLTF",
+  THREEDTILES = "THREEDTILES",
+}
+
+/**
+ * Drop and add a billboard
+ * @param event 
+ * @param pageConfigItemList 
+ * @param setPageConfigItemList 
+ */
 function handleDrop(event: any, pageConfigItemList: Array<PageConfigItem>, setPageConfigItemList:Function): void {
   event.preventDefault();
   if (viewer.scene && viewer.scene.pickPositionSupported) {
@@ -45,28 +64,15 @@ function handleDrop(event: any, pageConfigItemList: Array<PageConfigItem>, setPa
       event.clientX - widthDiff,
       event.clientY
     );
-    if (billboardCollection === undefined) {
-      billboardCollection = new BillboardCollection();
-      viewer.scene.primitives.add(billboardCollection);
+    if(!billboards){
+      billboards = new Billboard(viewer)
     }
     let car3Position = viewer.scene.pickPosition(
       currentPosition,
       new Cartesian3()
     );
-    
-    let icon:string | undefined = defaultBillboardConfigItems.find(i => i.name === "billboard_icon")?.value.toString()
-    let color:string = defaultBillboardConfigItems.find(i => i.name === "billboard_color")?.value.toString()
-    let size = defaultBillboardConfigItems.find(i => i.name === "billboard_size")?.value || 1
-    if(typeof size === "string"){
-        size = parseInt(size);
-    }
-    let billboard = billboardCollection.add({
-      position: car3Position,
-      pixelOffset: new Cartesian2(0, -30 * size),
-      image: icon,
-      color: Color.fromCssColorString(color),
-      scale: size
-    });
+    let billboardId = uuidv4();
+    billboards.addNewBillboard(defaultBillboardConfigItems, car3Position, billboardId)
     let elementConfList: Array<PageConfigItem> = [];
     defaultBillboardConfigItems.forEach(element => {
         let newPageConfigItem = {} as PageConfigItem;
@@ -76,8 +82,9 @@ function handleDrop(event: any, pageConfigItemList: Array<PageConfigItem>, setPa
         elementConfList.push(newPageConfigItem)
     });
     let pageConfList = pageConfigItemList;
-    pageConfList.push({name: "billboard", value: elementConfList, type: null})
+    pageConfList.push({name: "billboard-" + billboards.billboardCollection.length.toString(), value: elementConfList, type: ComponentTypes.BILLBOARD, id: billboardId})
     setPageConfigItemList(pageConfList)
+
   }
 }
 
@@ -90,7 +97,17 @@ function loadPageConfig(
   viewer: Viewer,
   pageConfigItemList: Array<PageConfigItem>
 ) {
-    debugger
+  pageConfigItemList.forEach(configItem => {
+    switch (configItem.type) {
+      case ComponentTypes.BILLBOARD:
+        if(billboards && configItem.value instanceof Array){
+          billboards.updateBillboard(configItem.value, configItem.id)
+        }
+        break;
+      default:
+        break;
+    }
+  })
 }
 
 export default function MapContainer({

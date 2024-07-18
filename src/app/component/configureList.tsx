@@ -18,6 +18,7 @@ interface Config {
 function getConfigItemTemplate(
   pageConfigItemList: Array<PageConfigItem>,
   configItemList: Array<Config>,
+  setConfigItemList: Function,
   setPageConfigItemList: Function,
   indexInPageConfig: number,
 ) {
@@ -25,7 +26,7 @@ function getConfigItemTemplate(
         if(item.type.includes("file")){
             return (
                 <div className="list-item" key={index}>
-                {item.name}:{item.value}
+                {item.name.split("_")[1]}:{item.value}
                 <input
                     className="list-input"
                     type={item.type}
@@ -34,7 +35,8 @@ function getConfigItemTemplate(
                         let fullList = deepClone(pageConfigItemList)
                         let localList = deepClone(configItemList)
                         localList[index].value = e.target.value;
-                        fullList[indexInPageConfig] = localList[index]
+                        fullList[indexInPageConfig].value = localList
+                        setConfigItemList(localList)
                         setPageConfigItemList(fullList)
                     }}
                 ></input>
@@ -43,7 +45,7 @@ function getConfigItemTemplate(
         }
         return (
         <div className="list-item" key={index}>
-            {item.name}:{" "}
+            {item.name.split("_")[1]}:{" "}
             <input
             className="list-input"
             type={item.type}
@@ -52,7 +54,8 @@ function getConfigItemTemplate(
               let fullList = deepClone(pageConfigItemList)
               let localList = deepClone(configItemList)
               localList[index].value = e.target.value;
-              fullList[indexInPageConfig] = localList[index]
+              fullList[indexInPageConfig].value = localList
+              setConfigItemList(localList)
               setPageConfigItemList(fullList)
             }}
             ></input>
@@ -78,7 +81,7 @@ export default function ConfigList({
   if(lastConfig && lastConfig.value instanceof Array && lastConfig.value.length > 0 && configItemList.length === 0){
     lastConfig.value.forEach(item => {
         let configObj = {} as Config
-        configObj.name = item.name.split("_")[1]
+        configObj.name = item.name
         configObj.value = item.value
         configObj.type = item.type || "text";
         configItemList.push(configObj)
@@ -87,6 +90,7 @@ export default function ConfigList({
   let configElements = getConfigItemTemplate(
       pageConfigItemList,
       configItemList,
+      setConfigItemList,
       setPageConfigItemList,
       pageConfigItemList.length - 1
     );
