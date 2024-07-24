@@ -2,12 +2,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { deepClone } from "@/utils/util";
-
-enum InputTypes {
-  Color = "color",
-  Number = "number",
-  Text = "text",
-}
+import { InputTypes } from "@/app/enums";
 
 interface Config {
   name: string;
@@ -97,15 +92,15 @@ export default function ConfigList({
 
   return (
     <div className={isDisplay ? "config-list-display" : "config-list"}>
+    <div
+      className="close-button"
+      onClick={(e) => {
+        setIsEditDisplay(false);
+      }}
+    >
+      X
+    </div>
       {configElements}
-      <div
-        className="close-button"
-        onClick={(e) => {
-          setIsEditDisplay(false);
-        }}
-      >
-        X
-      </div>
     </div>
   );
 }

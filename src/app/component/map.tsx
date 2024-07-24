@@ -2,6 +2,7 @@
 import mapPin from "../../../public/assets/map-pin.svg";
 import { v4 as uuidv4 } from 'uuid';
 import Billboard from "./mapComponents/billboard";
+import { defaultBillboardConfigItems } from "../defaults";
 
 declare global {
   interface Window {
@@ -20,34 +21,11 @@ import {
   Color
 } from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
+import { ComponentTypes } from "@/app/enums";
+
+// Define objects
 let viewer: Viewer;
-
 let billboards: Billboard;
-
-let defaultBillboardConfigItems = [{
-    name: "billboard_color",
-    value: "#ff0000",
-    type: "color", id: uuidv4()
-},{
-    name: "billboard_icon",
-    value: "/assets/map-pin.svg",
-    type: "file", id: uuidv4()
-},{
-    name: "billboard_size",
-    value: 1,
-    type: "number", id: uuidv4()
-}]
-
-enum ComponentTypes {
-  BILLBOARD = "BILLBOARD",
-  POINT = "POINT",
-  LINESTRING = "LINESTRING",
-  POLYGON = "POLYGON",
-  IMAGE_POPUP = "IMAGE_POPUP",
-  HTML_POPUP = "HTML_POPUP",
-  GLTF = "GLTF",
-  THREEDTILES = "THREEDTILES",
-}
 
 /**
  * Drop and add a billboard

@@ -5,16 +5,34 @@ import React, {useRef, useEffect, useState} from 'react'
 let basicFunctionList = [
     "Drag & Drop Point Marker", 
     "Load GeoJSON file", 
-    "Load WMTS Map Service",
     "Add Image Popup To Feature",
     "Add HTML Popup To Feature",
     "Add GLTF Model",
     "Add 3DTiles Service",
+    "Add WMTS Service",
+    "Add WMS Service",
     "Clear Map",
 ]
+let setUploadDisplay:Function
+let setFuncName:Function
 
-export default function FunctionList(){
-    
+function clickButton(item: string){
+    setUploadDisplay(true)
+    setFuncName(item)
+}
+
+export default function FunctionList({
+    setIsUploadDisplay,
+    setFunctionName
+  }: {
+    setIsUploadDisplay: Function;
+    setFunctionName: Function
+  }){
+
+    useEffect(() => {
+        setUploadDisplay = setIsUploadDisplay;
+        setFuncName = setFunctionName;
+    }, [])
     return (
       <div className="function-list">
           {
@@ -26,7 +44,7 @@ export default function FunctionList(){
                         {item}
                     </div>
                 }
-                return <div className='list-item' key={index}>
+                return <div className='list-item' key={index} onClick={e => clickButton(item)}>
                     {item}
                 </div>
             })
