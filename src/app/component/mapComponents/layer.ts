@@ -1,3 +1,5 @@
+// todo create a class for map layers, so other layer types use common functions from this class.
+
 import {
     Cartesian2,
     Cartesian3,
@@ -7,16 +9,20 @@ import {
     Color
   } from "cesium";
 
-class VectorLine {
+class Layer {
     viewer: Viewer;
     constructor(viewer: Viewer) {
         this.viewer = viewer
     }
-    init(geojson: Object){
+    /**
+     * Init layer using data, or no data
+     * @param geojson 
+     */
+    init(geojson: Object | undefined){
 
     }
     /**
-     * Add a billboard
+     * Add a feature to the layer
      * @param config 
      * @param position 
      * @param id 
@@ -39,4 +45,4 @@ class VectorLine {
     }
 }
 
-export default VectorLine
+export default Layer

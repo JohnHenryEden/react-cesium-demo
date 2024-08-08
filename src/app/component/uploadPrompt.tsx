@@ -1,10 +1,36 @@
 "use client"
 
 import React, {useRef, useEffect, useState} from 'react'
+import { BasicFunctionList } from "../enums"
+import { readGeoJson } from "./map"
 
 function clickButton(item: string){
     console.log(item)
 }
+
+function processInputFile(){
+
+}
+
+/**
+ * Show upload window and get uploaded file
+ */
+function getUploadFileGeoJson(e: any){
+  const input = e.target
+  const files = input.files
+  if(files){
+    let file = files[0]
+    let reader = new FileReader()
+    reader.onload = function(){
+      let result = readGeoJson(this.result?.toString() || "")
+      if(result !== 0){
+        alert("File content is not GeoJSON format, please check uploaded file.") // todo replace with better alert
+      }
+    }
+    reader.readAsText(file) 
+  }
+}
+
 /**
  * Upload/input data prompt
  * @param isDisplay if the prompt shows
@@ -21,6 +47,22 @@ export default function UploadPrompt({
     setIsUploadDisplay: Function;
     functionItem: string
   }){
+
+    let functionContent:React.JSX.Element
+
+    switch(functionItem){
+      case BasicFunctionList.LOAD_GEOJSON:
+        functionContent = (
+        <div>
+          <label className="button" htmlFor="geojsonUpload">Select GeoJSON file...</label>
+          <input type="file" id="geojsonUpload" name="geojsonUpload" accept=".json,.geojson" onChange={e => getUploadFileGeoJson(e)} style={{opacity: 0, width: "1px"}}/>
+        </div>
+      )
+        break
+      default:
+        functionContent = (<div>content</div>)
+        break
+    }
     
     return (
       <div className={isDisplay ? "upload-prompt-display" : "upload-prompt"}>
@@ -33,7 +75,8 @@ export default function UploadPrompt({
         >
             X
         </div>
-        {functionItem}
+        <div className="prompt-title">{functionItem}</div>
+        <div className="prompt-content">{functionContent}</div>
       </div>
     );
 }

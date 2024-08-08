@@ -2,6 +2,10 @@
 import mapPin from "../../../public/assets/map-pin.svg";
 import { v4 as uuidv4 } from 'uuid';
 import Billboard from "./mapComponents/billboard";
+import Layer from "./mapComponents/layer";
+import VectorPoint from "./mapComponents/vectorPoint";
+import VectorLine from "./mapComponents/vectorLine";
+import VectorPolygon from "./mapComponents/vectorPolygon";
 import { defaultBillboardConfigItems } from "../defaults";
 
 declare global {
@@ -88,6 +92,40 @@ function loadPageConfig(
   })
 }
 
+/**
+ * Read GeoJSON and pass to appropriate component
+ * @param geoJsonContent
+ * @returns success indicator for validation and external use, 0 for success, 1 for fail
+ */
+export function readGeoJson(geoJsonContent: string): number{
+  try {
+    let jsonObj = JSON.parse(geoJsonContent)
+    if(jsonObj.type && jsonObj.type === "FeatureCollection"){
+      let featureType = jsonObj.features[0].geometry.type
+      featureType = featureType.toLowerCase()
+      switch(true){
+        case featureType.includes('polygon'):
+          break
+        case featureType.includes('line'):
+          break
+        case featureType.includes('point'):
+          break
+        default:
+          break
+      }
+      return 0
+    }
+    return 1
+  } catch (error) {
+    return 1
+  }
+}
+
+/**
+ * JSX for the map component
+ * @param param0 
+ * @returns 
+ */
 export default function MapContainer({
   setIsEditDisplay,
   pageConfigItemList,

@@ -1,18 +1,14 @@
 "use client"
 
 import React, {useRef, useEffect, useState} from 'react'
+import {BasicFunctionList} from "../enums"
 
-let basicFunctionList = [
-    "Drag & Drop Point Marker", 
-    "Load GeoJSON file", 
-    "Add Image Popup To Feature",
-    "Add HTML Popup To Feature",
-    "Add GLTF Model",
-    "Add 3DTiles Service",
-    "Add WMTS Service",
-    "Add WMS Service",
-    "Clear Map",
-]
+// iterate the enum
+let basicFunctions: keyof typeof BasicFunctionList
+let basicFunctionList:string[] = []
+for(basicFunctions in BasicFunctionList){
+    basicFunctionList.push(BasicFunctionList[basicFunctions])
+}
 let setUploadDisplay:Function
 let setFuncName:Function
 
@@ -37,7 +33,7 @@ export default function FunctionList({
       <div className="function-list">
           {
             basicFunctionList.map((item:string, index:number) => {
-                if(item === "Drag & Drop Point Marker"){ 
+                if(item === BasicFunctionList.POINT_DRAG_DROP){ 
                     return <div className='list-item' key={index}  draggable="true"
                     onDragStart={e => console.log('onDragStart')}
                     onDragEnd={e => console.log('onDragEnd')}>
