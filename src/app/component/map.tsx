@@ -6,7 +6,7 @@ import Layer from "./mapComponents/layer";
 import VectorPoint from "./mapComponents/vectorPoint";
 import VectorLine from "./mapComponents/vectorLine";
 import VectorPolygon from "./mapComponents/vectorPolygon";
-import { defaultBillboardConfigItems } from "../defaults";
+import { defaultBillboardConfigItems, defaultPolygonConfigItems } from "../defaults";
 
 declare global {
   interface Window {
@@ -30,6 +30,7 @@ import { ComponentTypes } from "@/app/enums";
 // Define objects
 let viewer: Viewer;
 let billboards: Billboard;
+let layers: Array<Layer> = []
 
 /**
  * Drop and add a billboard
@@ -105,6 +106,9 @@ export function readGeoJson(geoJsonContent: string): number{
       featureType = featureType.toLowerCase()
       switch(true){
         case featureType.includes('polygon'):
+          let layer = new VectorPolygon(viewer)
+          layer.init(jsonObj, defaultPolygonConfigItems)
+          layers.push(layer)
           break
         case featureType.includes('line'):
           break

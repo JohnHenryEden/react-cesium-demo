@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/geojson": "^7946.0.14",
     "cesium": "^1.118.2",
     "next": "14.2.4",
     "react": "^18",

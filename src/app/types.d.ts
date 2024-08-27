@@ -5,7 +5,7 @@ interface Config{
 }
 
 interface PageConfigItem{
-    name: String,
+    name: string,
     value: Array<any> | any,
     type: String | null | void | undefined
     id: String|void|undefined

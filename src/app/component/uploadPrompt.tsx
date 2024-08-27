@@ -15,7 +15,7 @@ function processInputFile(){
 /**
  * Show upload window and get uploaded file
  */
-function getUploadFileGeoJson(e: any){
+function getUploadFileGeoJson(e: any, setIsUploadDisplay: Function){
   const input = e.target
   const files = input.files
   if(files){
@@ -25,6 +25,8 @@ function getUploadFileGeoJson(e: any){
       let result = readGeoJson(this.result?.toString() || "")
       if(result !== 0){
         alert("File content is not GeoJSON format, please check uploaded file.") // todo replace with better alert
+      }else {
+        setIsUploadDisplay(false);
       }
     }
     reader.readAsText(file) 
@@ -55,7 +57,7 @@ export default function UploadPrompt({
         functionContent = (
         <div>
           <label className="button" htmlFor="geojsonUpload">Select GeoJSON file...</label>
-          <input type="file" id="geojsonUpload" name="geojsonUpload" accept=".json,.geojson" onChange={e => getUploadFileGeoJson(e)} style={{opacity: 0, width: "1px"}}/>
+          <input type="file" id="geojsonUpload" name="geojsonUpload" accept=".json,.geojson" onChange={e => getUploadFileGeoJson(e, setIsUploadDisplay)} style={{opacity: 0, width: "1px"}}/>
         </div>
       )
         break

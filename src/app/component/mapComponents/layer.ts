@@ -1,48 +1,45 @@
 // todo create a class for map layers, so other layer types use common functions from this class.
 
 import {
-    Cartesian2,
-    Cartesian3,
-    Math as CesiumMath,
     Viewer,
-    BillboardCollection,
-    Color
   } from "cesium";
+import { Feature } from "geojson";
 
-class Layer {
-    viewer: Viewer;
-    constructor(viewer: Viewer) {
-        this.viewer = viewer
-    }
+interface Layer {
+    viewer: Viewer | any;
+    features: Array<Feature>;
     /**
      * Init layer using data, or no data
      * @param geojson 
+     * @param config display config for feature(s)
+     * @returns Layer object
      */
-    init(geojson: Object | undefined){
-
-    }
+    init(geojson: Object | undefined, config: Array<PageConfigItem>): Layer
     /**
      * Add a feature to the layer
-     * @param config 
-     * @param position 
-     * @param id 
+     * @param geojson Spatial data in GeoJSON format
+     * @param config display config for feature(s)
      */
-    addNewFeature(config:Array<PageConfigItem>, position:Cartesian3, id: string){
-    }
-    removeFeature(){
-
-    }
-    removeAllFeature(){
-
-    }
+    addNewFeature(geojson: Object | undefined, config:Array<PageConfigItem>): void
+    
+    /**
+     * get feature by index
+     */
+    get(id: number): void
+    /**
+     * Remove feature by id
+     */
+    removeFeature(id: number): void
+    /**
+     * Remove all feature
+     */
+    removeAllFeature(): void
     /**
      * Update a Feature
-     * @param config 
-     * @param id 
+     * @param config Display config for feature(s)
+     * @param id feature index
      */
-    updateFeature(config:Array<PageConfigItem>, id: void|String|undefined){
-
-    }
+    updateFeature(config:Array<PageConfigItem>, id: number): void
 }
 
 export default Layer
