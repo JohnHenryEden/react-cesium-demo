@@ -40,6 +40,11 @@ interface Layer {
      * @param id feature index
      */
     updateFeature(config:Array<PageConfigItem>, id: number): void
+    /**
+     * Switch layer display, call to change current display status
+     * @returns boolean value indicating whether the layer is displaying
+     */
+    switchLayerDisplay():boolean
 }
 
 export default Layer

@@ -29,8 +29,9 @@ function getUploadFileGeoJson(e: any, setIsUploadDisplay: Function){
         setIsUploadDisplay(false);
       }
     }
-    reader.readAsText(file) 
+    reader.readAsText(file)
   }
+  e.target.value = null
 }
 
 /**

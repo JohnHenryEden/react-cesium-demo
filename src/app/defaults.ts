@@ -29,7 +29,7 @@ export const defaultPolygonConfigItems = [{
     type: "number", id: uuidv4()
 },{
     name: "color",
-    value: 1,
+    value: "#ff0000",
     type: "color", id: uuidv4()
 },{
     name: "alpha",
@@ -41,7 +41,7 @@ export const defaultPolygonConfigItems = [{
     type: "checkbox", id: uuidv4()
 },{
     name: "outlineColor",
-    value: 1,
+    value: "#000000",
     type: "color", id: uuidv4()
 },{
     name: "outlineWidth",
