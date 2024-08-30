@@ -33,7 +33,11 @@ export const defaultPolygonConfigItems = [{
     type: "color", id: uuidv4()
 },{
     name: "alpha",
-    value: 1,
+    value: 0.5,
+    type: "number", id: uuidv4()
+},{
+    name: "width",
+    value: 5,
     type: "number", id: uuidv4()
 },{
     name: "outline",

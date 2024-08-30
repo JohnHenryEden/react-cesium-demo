@@ -15,7 +15,9 @@ import {
     GroundPrimitive,
     Primitive,
     PolylineGeometry,
-    PolylineMaterialAppearance
+    PolylineMaterialAppearance,
+    PointPrimitive,
+    PointPrimitiveCollection
   } from "cesium";
 import Layer from "./layer";
 import { Feature, FeatureCollection } from "geojson";
@@ -67,29 +69,37 @@ class VectorLayer implements Layer{
                 let entities = ds.entities.values
                 let polygonInstances = []
                 let polylineInstances = []
+                
+                let pointPrimitiveCollection = new PointPrimitiveCollection({
+                    show: true
+                })
+                
                 for (let index = 0; index < entities.length; index++) {
                     const entity = entities[index];
                     // polygon
-                    const hierarchy = entity.polygon?.hierarchy?.getValue(JulianDate.now())
-                    if(hierarchy){
-                        let geometry = new PolygonGeometry({
-                            polygonHierarchy: hierarchy,
-                            height: vectorConfig.height || 0,
-                            extrudedHeight: vectorConfig.extrudedHeight || 0,
-                            closeTop: vectorConfig.closeTop || true,
-                            closeBottom: vectorConfig.closeBottom || true,
-                        })
-                        let polygonGeometry = PolygonGeometry.createGeometry(geometry)
-                        if(polygonGeometry){
-                            let instance = new GeometryInstance({
-                                geometry: polygonGeometry,
-                                id : layerId + "-" + index
-                            });
-                            polygonInstances.push(instance)
+                    if(entity.polygon){
+                        const hierarchy = entity.polygon?.hierarchy?.getValue(JulianDate.now())
+                        if(hierarchy){
+                            let geometry = new PolygonGeometry({
+                                polygonHierarchy: hierarchy,
+                                height: vectorConfig.height || 0,
+                                extrudedHeight: vectorConfig.extrudedHeight || 0,
+                                closeTop: vectorConfig.closeTop || true,
+                                closeBottom: vectorConfig.closeBottom || true,
+                            })
+                            let polygonGeometry = PolygonGeometry.createGeometry(geometry)
+                            if(polygonGeometry){
+                                let instance = new GeometryInstance({
+                                    geometry: polygonGeometry,
+                                    id : layerId + "-" + index
+                                });
+                                polygonInstances.push(instance)
+                            }
                         }
                     }
                     // polyline
                     if(entity.polyline){
+                        debugger
                         let positions = entity.polyline.positions?.getValue(JulianDate.now())
                         if(positions){
                             const polyline = new PolylineGeometry({
@@ -106,14 +116,25 @@ class VectorLayer implements Layer{
                             }
                         }
                     }
+                    // Point
+                    if(entity.point){
+                        let position = entity.position?.getValue(JulianDate.now())
+                        if(position){
+                            // normal polygon
+                            let pointPrimitiveCollection = new PointPrimitiveCollection({
+                                show: true
+                            })
+                            let primitive = 
+                            this.viewer.scene.primitives.add(pointPrimitiveCollection)
+                        }
+                    }
                 }
                 let apperance = new MaterialAppearance({
                     material: new Material({
                         fabric : {
                             type : 'Color',
                             uniforms : {
-                                color : Color.fromCssColorString(vectorConfig.color || "#ff0000"),
-                                alpha: vectorConfig.color || 1
+                                color : Color.fromCssColorString(vectorConfig.color || "#ff0000").withAlpha(vectorConfig.alpha || 1)
                             }
                         }
                     })
@@ -123,8 +144,7 @@ class VectorLayer implements Layer{
                         fabric : {
                             type : 'Color',
                             uniforms : {
-                                color : Color.fromCssColorString(vectorConfig.color || "#ff0000"),
-                                alpha: vectorConfig.color || 1
+                                color : Color.fromCssColorString(vectorConfig.color || "#ff0000").withAlpha(vectorConfig.alpha || 1)
                             }
                         }
                     })
@@ -161,7 +181,7 @@ class VectorLayer implements Layer{
                         })
                         this.viewer.scene.primitives.add(groundPrimitive)
                     }else{
-                        // normal polygon
+                        // normal polyline
                         let primitive = new Primitive({
                             geometryInstances: polylineInstances,
                             appearance: polylineApperance,
@@ -170,6 +190,9 @@ class VectorLayer implements Layer{
                         })
                         this.viewer.scene.primitives.add(primitive)
                     }
+                }
+                if(pointPrimitiveCollection.length > 0){
+                    this.viewer.scene.primitives.add(pointPrimitiveCollection)
                 }
             })
         }

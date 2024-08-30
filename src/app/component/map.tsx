@@ -3,7 +3,7 @@ import mapPin from "../../../public/assets/map-pin.svg";
 import { v4 as uuidv4 } from 'uuid';
 import Billboard from "./mapComponents/billboard";
 import Layer from "./mapComponents/layer";
-import VectorLayer from "./mapComponents/VectorLayer";
+import VectorLayer from "./mapComponents/vectorLayer";
 import { defaultBillboardConfigItems, defaultPolygonConfigItems } from "../defaults";
 
 declare global {
@@ -100,9 +100,7 @@ export function readGeoJson(geoJsonContent: string): number{
   try {
     let jsonObj = JSON.parse(geoJsonContent)
     if(jsonObj.type && jsonObj.type === "FeatureCollection"){
-      let featureType = jsonObj.features[0].geometry.type
-      featureType = featureType.toLowerCase()
-      
+      debugger
       let layer = new VectorLayer(viewer)
       layer.init(jsonObj, defaultPolygonConfigItems)
       layers.push(layer)
