@@ -29,6 +29,8 @@ import { ComponentTypes } from "@/app/enums";
 let viewer: Viewer;
 let billboards: Billboard;
 let layers: Array<Layer> = []
+let pConfigItemList: Array<PageConfigItem>
+let setPConfigItemList: Function
 
 /**
  * Drop and add a billboard
@@ -100,10 +102,23 @@ export function readGeoJson(geoJsonContent: string): number{
   try {
     let jsonObj = JSON.parse(geoJsonContent)
     if(jsonObj.type && jsonObj.type === "FeatureCollection"){
-      debugger
+      
       let layer = new VectorLayer(viewer)
       layer.init(jsonObj, defaultPolygonConfigItems)
+
+      let elementConfList: Array<PageConfigItem> = [];
+      defaultPolygonConfigItems.forEach(element => {
+        let newPageConfigItem = {} as PageConfigItem;
+        newPageConfigItem.name = element.name;
+        newPageConfigItem.value = element.value
+        newPageConfigItem.type = element.type
+        elementConfList.push(newPageConfigItem)
+      });
+      debugger
       layers.push(layer)
+      let pageConfList = pConfigItemList;  
+      pageConfList.push({name: "layer-vector-" + layers.length.toString(), value: elementConfList, type: ComponentTypes.VECTOR, id: layer.layerId})
+      setPConfigItemList(pageConfList)
       return 0
     }
     return 1
@@ -126,6 +141,8 @@ export default function MapContainer({
   pageConfigItemList: Array<PageConfigItem>;
   setPageConfigItemList: Function;
 }) {
+  pConfigItemList = pageConfigItemList;
+  setPConfigItemList = setPageConfigItemList;
   const cesiumContainerRef = useRef<HTMLDivElement>(null);
   const [pageConfigList, setPageConfigList] = useState(pageConfigItemList)
   useEffect(() => {

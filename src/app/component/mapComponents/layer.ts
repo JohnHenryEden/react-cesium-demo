@@ -25,7 +25,7 @@ interface Layer {
     /**
      * get feature by index
      */
-    get(id: number): void
+    get(id: number): Feature | undefined
     /**
      * Remove feature by id
      */

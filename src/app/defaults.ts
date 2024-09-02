@@ -16,47 +16,47 @@ export const defaultBillboardConfigItems = [{
 }]
 
 export const defaultPolygonConfigItems = [{
-    name: "height",
+    name: "vector_height",
     value: 0,
     type: "color", id: uuidv4()
 },{
-    name: "clampToGround",
+    name: "vector_clampToGround",
     value: false,
     type: "checkbox", id: uuidv4()
 },{
-    name: "extrudedHeight",
+    name: "vector_extrudedHeight",
     value: 0,
     type: "number", id: uuidv4()
 },{
-    name: "color",
+    name: "vector_color",
     value: "#ff0000",
     type: "color", id: uuidv4()
 },{
-    name: "alpha",
+    name: "vector_alpha",
     value: 0.5,
     type: "number", id: uuidv4()
 },{
-    name: "width",
+    name: "vector_width",
     value: 5,
     type: "number", id: uuidv4()
 },{
-    name: "outline",
+    name: "vector_outline",
     value: false,
     type: "checkbox", id: uuidv4()
 },{
-    name: "outlineColor",
+    name: "vector_outlineColor",
     value: "#000000",
     type: "color", id: uuidv4()
 },{
-    name: "outlineWidth",
+    name: "vector_outlineWidth",
     value: 1,
     type: "number", id: uuidv4()
 },{
-    name: "closeTop",
+    name: "vector_closeTop",
     value: true,
     type: "checkbox", id: uuidv4()
 },{
-    name: "closeBottom",
+    name: "vector_closeBottom",
     value: true,
     type: "checkbox", id: uuidv4()
 }]

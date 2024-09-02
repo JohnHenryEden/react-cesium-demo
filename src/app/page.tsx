@@ -27,6 +27,7 @@ export default function Home() {
 
       <UploadPrompt isDisplay={isUploadDisplay}
         setIsUploadDisplay={setIsUploadDisplay}
+        setIsEditDisplay={setIsEditDisplay}
         functionItem={functionName}
       ></UploadPrompt>
 

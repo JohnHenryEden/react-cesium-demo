@@ -16,7 +16,6 @@ import {
     Primitive,
     PolylineGeometry,
     PolylineMaterialAppearance,
-    PointPrimitive,
     PointPrimitiveCollection
   } from "cesium";
 import Layer from "./layer";
@@ -27,9 +26,16 @@ class VectorLayer implements Layer{
     viewer: Viewer;
     features: Feature[] = [];
     primitiveCollection: PrimitiveCollection
+    pointPrimitiveCollection: PointPrimitiveCollection
+    layerId: string | undefined
+    primitiveCollectionAdded: boolean = false;
+    pointCollectionAdded: boolean = false;
     constructor(viewer: Viewer) {
         this.viewer = viewer
         this.primitiveCollection = new PrimitiveCollection()
+        this.pointPrimitiveCollection = new PointPrimitiveCollection({
+            show: true
+        })
     }
     /**
      * init vector layer, implementing method of layer interface.
@@ -50,14 +56,24 @@ class VectorLayer implements Layer{
      * @returns This VectorLayer object
      */
     init(geojson: FeatureCollection | undefined, configs: Array<PageConfigItem>): Layer {
-        let layerId = uuidv4()
+        this.layerId = uuidv4()
+        this.addNewFeature(geojson, configs)
+        return this
+    }
+    get(id: number): Feature | undefined {
+        return this.features[id]
+    }
+    getAll(): Array<Feature> | undefined {
+        return this.features
+    }
+    addNewFeature(geojson: FeatureCollection | undefined, configs: Array<PageConfigItem>): void {
         if(geojson && geojson.features){
             this.features.push(...geojson.features)
         }
         let vectorConfig:any = {}
         for(let i = 0; i < configs.length; i++){
             let config = configs[i];
-            vectorConfig[config.name] = config.value
+            vectorConfig[config.name.split("_")[1]] = config.value
         }
         if(this.features.length > 0){
             // create geometry instance for polygons
@@ -69,11 +85,7 @@ class VectorLayer implements Layer{
                 let entities = ds.entities.values
                 let polygonInstances = []
                 let polylineInstances = []
-                
-                let pointPrimitiveCollection = new PointPrimitiveCollection({
-                    show: true
-                })
-                
+
                 for (let index = 0; index < entities.length; index++) {
                     const entity = entities[index];
                     // polygon
@@ -91,7 +103,7 @@ class VectorLayer implements Layer{
                             if(polygonGeometry){
                                 let instance = new GeometryInstance({
                                     geometry: polygonGeometry,
-                                    id : layerId + "-" + index
+                                    id : this.layerId + "-" + index
                                 });
                                 polygonInstances.push(instance)
                             }
@@ -109,19 +121,17 @@ class VectorLayer implements Layer{
                             if(polylineGeometry){
                                 let instance = new GeometryInstance({
                                     geometry: polylineGeometry,
-                                    id : layerId + "-" + index
+                                    id : this.layerId + "-" + index
                                 });
                                 polylineInstances.push(instance)
                             }
                         }
                     }
                     // Point
-                    debugger
                     if(entity.billboard && entity.position){
-                        debugger
                         let position = entity.position?.getValue(JulianDate.now())
                         if(position){
-                            pointPrimitiveCollection.add({
+                            this.pointPrimitiveCollection.add({
                                 color : Color.fromCssColorString(vectorConfig.color || "#ff0000").withAlpha(vectorConfig.alpha || 1),
                                 outlineColor: Color.fromCssColorString(vectorConfig.outlineColor || "#000000").withAlpha(vectorConfig.alpha || 1),
                                 outlineWidth: vectorConfig.outlineWidth || 1,
@@ -161,7 +171,7 @@ class VectorLayer implements Layer{
                             show: true,
                             asynchronous: false
                         })
-                        this.viewer.scene.primitives.add(groundPrimitive)
+                        this.primitiveCollection.add(groundPrimitive)
                     }else{
                         // normal polygon
                         let primitive = new Primitive({
@@ -170,7 +180,7 @@ class VectorLayer implements Layer{
                             show: true,
                             asynchronous: false
                         })
-                        this.viewer.scene.primitives.add(primitive)
+                        this.primitiveCollection.add(primitive)
                     }
                 }
                 if(polylineInstances.length > 0){
@@ -182,7 +192,7 @@ class VectorLayer implements Layer{
                             show: true,
                             asynchronous: false
                         })
-                        this.viewer.scene.primitives.add(groundPrimitive)
+                        this.primitiveCollection.add(groundPrimitive)
                     }else{
                         // normal polyline
                         let primitive = new Primitive({
@@ -191,22 +201,19 @@ class VectorLayer implements Layer{
                             show: true,
                             asynchronous: false
                         })
-                        this.viewer.scene.primitives.add(primitive)
+                        this.primitiveCollection.add(primitive)
                     }
                 }
-                if(pointPrimitiveCollection.length > 0){
-                    debugger
-                    this.viewer.scene.primitives.add(pointPrimitiveCollection)
+                if(this.primitiveCollection.length > 0 && this.primitiveCollectionAdded === false){
+                    this.viewer.scene.primitives.add(this.primitiveCollection)
+                    this.primitiveCollectionAdded = true
+                }
+                if(this.pointPrimitiveCollection.length > 0 && this.pointCollectionAdded === false){
+                    this.viewer.scene.primitives.add(this.pointPrimitiveCollection)
+                    this.pointCollectionAdded = true
                 }
             })
         }
-        return this
-    }
-    get(id: number): void {
-        
-    }
-    addNewFeature(geojson: Object | undefined, config: Array<PageConfigItem>): void {
-        
     }
     removeFeature(id: number): void {
         

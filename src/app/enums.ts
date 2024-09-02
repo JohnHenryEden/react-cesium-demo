@@ -7,9 +7,7 @@ export enum InputTypes {
 
 export enum ComponentTypes {
     BILLBOARD = "BILLBOARD",
-    POINT = "POINT",
-    LINESTRING = "LINESTRING",
-    POLYGON = "POLYGON",
+    VECTOR = "VECTOR",
     IMAGE_POPUP = "IMAGE_POPUP",
     HTML_POPUP = "HTML_POPUP",
     GLTF = "GLTF",

@@ -4,6 +4,8 @@ import React, {useRef, useEffect, useState} from 'react'
 import { BasicFunctionList } from "../enums"
 import { readGeoJson } from "./map"
 
+let setEditDisplay: Function;
+
 function clickButton(item: string){
     console.log(item)
 }
@@ -27,6 +29,7 @@ function getUploadFileGeoJson(e: any, setIsUploadDisplay: Function){
         alert("File content is not GeoJSON format, please check uploaded file.") // todo replace with better alert
       }else {
         setIsUploadDisplay(false);
+        setEditDisplay(true);
       }
     }
     reader.readAsText(file)
@@ -43,14 +46,16 @@ function getUploadFileGeoJson(e: any, setIsUploadDisplay: Function){
  */
 export default function UploadPrompt({
     isDisplay,
+    setIsEditDisplay,
     setIsUploadDisplay,
     functionItem
   }: {
     isDisplay: boolean;
+    setIsEditDisplay: Function
     setIsUploadDisplay: Function;
     functionItem: string
   }){
-
+    setEditDisplay = setIsEditDisplay;
     let functionContent:React.JSX.Element
 
     switch(functionItem){

@@ -22,10 +22,12 @@
     position: relative;
     display: inline-block;
     height: fit-content;
-    width: 17%;
-    height: 100%;
+    position: absolute;
+    width: 84%;
+    height: 4%;
     margin: 0;
     padding: 0;
+    z-index: 9999;
 }
 .config-list{
     display: none;
@@ -59,12 +61,13 @@
 }
 
 .list-item{
-    border-bottom: 1px solid #fff;
+    border-right: 2px solid #fff;
     color: #fff;
-    width: 100%;
+    width: auto;
     line-height: 35px;
-    font-size: 20px;
-    padding-left: 5px;
+    display: inline;
+    font-size: 15px;
+    padding: 5px;
     cursor: pointer;
 }
 .close-button{
