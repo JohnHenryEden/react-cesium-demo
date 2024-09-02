@@ -3,6 +3,17 @@
     "features": [
         {
             "type": "Feature",
+            "properties": {},
+            "geometry": {
+              "coordinates": [
+                113.91490387383448,
+                22.488742814555437
+              ],
+              "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
             "properties": {
                 "name": "北京",
                 "center": [

@@ -99,7 +99,6 @@ class VectorLayer implements Layer{
                     }
                     // polyline
                     if(entity.polyline){
-                        debugger
                         let positions = entity.polyline.positions?.getValue(JulianDate.now())
                         if(positions){
                             const polyline = new PolylineGeometry({
@@ -117,15 +116,19 @@ class VectorLayer implements Layer{
                         }
                     }
                     // Point
-                    if(entity.point){
+                    debugger
+                    if(entity.billboard && entity.position){
+                        debugger
                         let position = entity.position?.getValue(JulianDate.now())
                         if(position){
-                            // normal polygon
-                            let pointPrimitiveCollection = new PointPrimitiveCollection({
-                                show: true
+                            pointPrimitiveCollection.add({
+                                color : Color.fromCssColorString(vectorConfig.color || "#ff0000").withAlpha(vectorConfig.alpha || 1),
+                                outlineColor: Color.fromCssColorString(vectorConfig.outlineColor || "#000000").withAlpha(vectorConfig.alpha || 1),
+                                outlineWidth: vectorConfig.outlineWidth || 1,
+                                pixelSize: vectorConfig.pixelSize || 10,
+                                show: true,
+                                position: position
                             })
-                            let primitive = 
-                            this.viewer.scene.primitives.add(pointPrimitiveCollection)
                         }
                     }
                 }
@@ -192,6 +195,7 @@ class VectorLayer implements Layer{
                     }
                 }
                 if(pointPrimitiveCollection.length > 0){
+                    debugger
                     this.viewer.scene.primitives.add(pointPrimitiveCollection)
                 }
             })
