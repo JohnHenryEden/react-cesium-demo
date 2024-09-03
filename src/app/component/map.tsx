@@ -20,7 +20,10 @@ import {
   Terrain,
   Viewer,
   BillboardCollection,
-  Color
+  Color,
+  ImageryLayer,
+  OpenStreetMapImageryProvider,
+  Ion
 } from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { ComponentTypes } from "@/app/enums";
@@ -148,10 +151,14 @@ export default function MapContainer({
   useEffect(() => {
       
     window.CESIUM_BASE_URL = "/Cesium";
+    Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkZjEwYjdhYS1lYzQ4LTQ5M2EtYTg5My02MDhhMTE1YTJlYmYiLCJpZCI6MTA0MSwiaWF0IjoxNTI2Nzg4NTcwfQ.3T6RRTRCIXu08pYcznhkseiYsLRgQxI3eq4ziLMcvtY"
     viewer = new Viewer(cesiumContainerRef.current as Element, {
       terrain: Terrain.fromWorldTerrain(),
       animation: false,
       baseLayerPicker: false,
+      baseLayer: new ImageryLayer(new OpenStreetMapImageryProvider({
+        url: "https://tile.openstreetmap.org/"
+      })),
       // fullscreenButton: false,
       vrButton: false,
       geocoder: false,

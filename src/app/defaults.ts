@@ -16,13 +16,13 @@ export const defaultBillboardConfigItems = [{
 }]
 
 export const defaultPolygonConfigItems = [{
-    name: "vector_height",
-    value: 0,
-    type: "color", id: uuidv4()
-},{
     name: "vector_clampToGround",
     value: false,
     type: "checkbox", id: uuidv4()
+},{
+    name: "vector_height",
+    value: 0,
+    type: "color", id: uuidv4()
 },{
     name: "vector_extrudedHeight",
     value: 0,
