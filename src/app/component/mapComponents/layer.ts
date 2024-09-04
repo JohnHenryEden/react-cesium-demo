@@ -8,6 +8,7 @@ import { Feature } from "geojson";
 interface Layer {
     viewer: Viewer | any;
     features: Array<Feature>;
+    layerId: string;
     /**
      * Init layer using data, or no data
      * @param geojson 
@@ -40,6 +41,12 @@ interface Layer {
      * @param id feature index
      */
     updateFeature(config:Array<PageConfigItem>, id: number): void
+    /**
+     * Update layer
+     * @param config Display config for feature(s)
+     * @param id feature index
+     */
+    updateLayer(config:Array<PageConfigItem>): void
     /**
      * Switch layer display, call to change current display status
      * @returns boolean value indicating whether the layer is displaying

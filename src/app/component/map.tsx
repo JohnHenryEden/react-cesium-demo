@@ -90,6 +90,16 @@ function loadPageConfig(
           billboards.updateBillboard(configItem.value, configItem.id)
         }
         break;
+      case ComponentTypes.VECTOR:
+        if(layers.length > 0 && configItem.value instanceof Array){
+          for (let index = 0; index < layers.length; index++) {
+            const layer = layers[index];
+            if(layer.layerId && layer.layerId === configItem.id){
+              layer.updateLayer(configItem.value)
+            }
+          }
+        }
+        break;
       default:
         break;
     }
@@ -117,7 +127,6 @@ export function readGeoJson(geoJsonContent: string): number{
         newPageConfigItem.type = element.type
         elementConfList.push(newPageConfigItem)
       });
-      debugger
       layers.push(layer)
       let pageConfList = pConfigItemList;  
       pageConfList.push({name: "layer-vector-" + layers.length.toString(), value: elementConfList, type: ComponentTypes.VECTOR, id: layer.layerId})

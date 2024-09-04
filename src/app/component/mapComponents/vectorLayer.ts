@@ -21,16 +21,18 @@ import {
 import Layer from "./layer";
 import { Feature, FeatureCollection } from "geojson";
 import { v4 as uuidv4 } from 'uuid';
+import { featureCollection } from "@turf/turf";
 
 class VectorLayer implements Layer{
     viewer: Viewer;
     features: Feature[] = [];
     primitiveCollection: PrimitiveCollection
     pointPrimitiveCollection: PointPrimitiveCollection
-    layerId: string | undefined
+    layerId: string;
     primitiveCollectionAdded: boolean = false;
     pointCollectionAdded: boolean = false;
     constructor(viewer: Viewer) {
+        this.layerId = uuidv4()
         this.viewer = viewer
         this.primitiveCollection = new PrimitiveCollection()
         this.pointPrimitiveCollection = new PointPrimitiveCollection({
@@ -56,7 +58,6 @@ class VectorLayer implements Layer{
      * @returns This VectorLayer object
      */
     init(geojson: FeatureCollection | undefined, configs: Array<PageConfigItem>): Layer {
-        this.layerId = uuidv4()
         this.addNewFeature(geojson, configs)
         return this
     }
@@ -68,8 +69,9 @@ class VectorLayer implements Layer{
     }
     addNewFeature(geojson: FeatureCollection | undefined, configs: Array<PageConfigItem>): void {
         if(geojson && geojson.features){
-            this.features.push(...geojson.features)
+            this.features = [...geojson.features]
         }
+        // todo find a way to replace any, maybe define a type for it?
         let vectorConfig:any = {}
         for(let i = 0; i < configs.length; i++){
             let config = configs[i];
@@ -94,8 +96,8 @@ class VectorLayer implements Layer{
                         if(hierarchy){
                             let geometry = new PolygonGeometry({
                                 polygonHierarchy: hierarchy,
-                                height: vectorConfig.height || 0,
-                                extrudedHeight: vectorConfig.extrudedHeight || 0,
+                                height: parseFloat(vectorConfig.height) || 0,
+                                extrudedHeight: parseFloat(vectorConfig.extrudedHeight) || 0,
                                 closeTop: vectorConfig.closeTop || true,
                                 closeBottom: vectorConfig.closeBottom || true,
                             })
@@ -115,7 +117,7 @@ class VectorLayer implements Layer{
                         if(positions){
                             const polyline = new PolylineGeometry({
                                 positions: positions,
-                                width: vectorConfig.width || 1.0
+                                width: parseFloat(vectorConfig.width) || 1.0
                               });
                             const polylineGeometry = PolylineGeometry.createGeometry(polyline);
                             if(polylineGeometry){
@@ -132,10 +134,10 @@ class VectorLayer implements Layer{
                         let position = entity.position?.getValue(JulianDate.now())
                         if(position){
                             this.pointPrimitiveCollection.add({
-                                color : Color.fromCssColorString(vectorConfig.color || "#ff0000").withAlpha(vectorConfig.alpha || 1),
-                                outlineColor: Color.fromCssColorString(vectorConfig.outlineColor || "#000000").withAlpha(vectorConfig.alpha || 1),
-                                outlineWidth: vectorConfig.outlineWidth || 1,
-                                pixelSize: vectorConfig.pixelSize || 10,
+                                color : Color.fromCssColorString(vectorConfig.color || "#ff0000").withAlpha(parseFloat(vectorConfig.alpha) || 1),
+                                outlineColor: Color.fromCssColorString(vectorConfig.outlineColor || "#000000").withAlpha(parseFloat(vectorConfig.alpha) || 1),
+                                outlineWidth: parseFloat(vectorConfig.alpha) || 1,
+                                pixelSize: parseFloat(vectorConfig.pointSize) || 10,
                                 show: true,
                                 position: position
                             })
@@ -147,7 +149,7 @@ class VectorLayer implements Layer{
                         fabric : {
                             type : 'Color',
                             uniforms : {
-                                color : Color.fromCssColorString(vectorConfig.color || "#ff0000").withAlpha(vectorConfig.alpha || 1)
+                                color : Color.fromCssColorString(vectorConfig.color || "#ff0000").withAlpha(parseFloat(vectorConfig.alpha) || 1)
                             }
                         }
                     })
@@ -157,7 +159,7 @@ class VectorLayer implements Layer{
                         fabric : {
                             type : 'Color',
                             uniforms : {
-                                color : Color.fromCssColorString(vectorConfig.color || "#ff0000").withAlpha(vectorConfig.alpha || 1)
+                                color : Color.fromCssColorString(vectorConfig.color || "#ff0000").withAlpha(parseFloat(vectorConfig.alpha) || 1)
                             }
                         }
                     })
@@ -219,10 +221,27 @@ class VectorLayer implements Layer{
         
     }
     removeAllFeature(): void {
-        
+        this.primitiveCollection.removeAll()
+        this.pointPrimitiveCollection.removeAll()
+        this.viewer.scene.primitives.remove(this.primitiveCollection)
+        this.viewer.scene.primitives.remove(this.pointPrimitiveCollection)
+        this.pointCollectionAdded = false
+        this.primitiveCollectionAdded = false
     }
     updateFeature(config: Array<PageConfigItem>, id: number): void {
         
+    }
+    updateLayer(config: Array<PageConfigItem>): void {
+        debugger
+        // remove all first, then load again
+        this.removeAllFeature()
+        
+        this.primitiveCollection = new PrimitiveCollection()
+        this.pointPrimitiveCollection = new PointPrimitiveCollection({
+            show: true
+        })
+        let features = featureCollection(this.features)
+        this.addNewFeature(features, config)
     }
     switchLayerDisplay(): boolean {
         return true

@@ -67,7 +67,7 @@ function getConfigItemTemplate(
                 onChange={(e) => {
                   let fullList = deepClone(pageConfigItemList)
                   let localList = deepClone(configItemList)
-                  localList[index].value = e.target.value;
+                  localList[index].value = e.target.checked;
                   fullList[indexInPageConfig].value = localList
                   setConfigItemList(localList)
                   setPageConfigItemList(fullList)
@@ -75,6 +75,26 @@ function getConfigItemTemplate(
                 ></input>
             </div>
           );
+        }
+        if(item.type.includes("number")){
+          return (
+            <div className='conf-list-item' key={index}>
+                {camelToNormal(item.name.split("_")[1], true)}:{" "}
+                <input
+                className="list-input"
+                type={item.type}
+                defaultValue={item.value}
+                onChange={(e) => {
+                  let fullList = deepClone(pageConfigItemList)
+                  let localList = deepClone(configItemList)
+                  localList[index].value = parseFloat(e.target.value);
+                  fullList[indexInPageConfig].value = localList
+                  setConfigItemList(localList)
+                  setPageConfigItemList(fullList)
+                }}
+                ></input>
+            </div>
+          ); 
         }
         return (
           <div className='conf-list-item' key={index}>
@@ -108,7 +128,6 @@ export default function ConfigList({
   setPageConfigItemList: Function
 }) {
   const [configItemList, setConfigItemList] = useState<Array<Config>>([]);
-  debugger
   let lastConfig = pageConfigItemList[pageConfigItemList.length - 1];
   if(configItemList.length !== 0){
     setConfigItemList([])

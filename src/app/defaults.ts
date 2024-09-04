@@ -20,9 +20,13 @@ export const defaultPolygonConfigItems = [{
     value: false,
     type: "checkbox", id: uuidv4()
 },{
+    name: "vector_pointSize",
+    value: 0,
+    type: "number", id: uuidv4()
+},{
     name: "vector_height",
     value: 0,
-    type: "color", id: uuidv4()
+    type: "number", id: uuidv4()
 },{
     name: "vector_extrudedHeight",
     value: 0,
