@@ -6,11 +6,14 @@ import FunctionList from "./component/functionList"
 import ConfigList from "./component/configureList"
 import React, {useState} from 'react'
 import UploadPrompt from "./component/uploadPrompt"
+import LayerList from "./component/layerList"
 
 
 export default function Home() {
   const [isEditDisplay, setIsEditDisplay] = useState(false);
   const [isUploadDisplay, setIsUploadDisplay] = useState(false);
+  const [isLayerDisplay, setIsLayerDisplay] = useState(false);
+  const [layerList, setLayerList] = useState([]);
   const [pageConfigItemList, setPageConfigItemList] = useState(new Array<PageConfigItem>());
   const [functionName, setFunctionName] = useState("");
 
@@ -24,6 +27,13 @@ export default function Home() {
         pageConfigItemList={pageConfigItemList}
         setPageConfigItemList={setPageConfigItemList}
       ></MapContainer>
+
+      <LayerList
+         layerList={layerList}
+         layerDisplay={isLayerDisplay}
+         setLayerList={setLayerList}
+         setLayerDisplay={setIsLayerDisplay}
+      ></LayerList>
 
       <UploadPrompt isDisplay={isUploadDisplay}
         setIsUploadDisplay={setIsUploadDisplay}
