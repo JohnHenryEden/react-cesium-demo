@@ -59,10 +59,19 @@
 }
 
 .layer-list-item{
-    display: inline-block;
+    display: flex;
     font-size: 26px;
+    justify-content: space-between;
+}
+.layer-btn{
+    display: inline-block;
+    font-size: 18px;
+    color: #aaa;
 }
 
+.layer-btn:hover{
+    color: #fff;
+}
 .upload-prompt{
     display: none;
 }

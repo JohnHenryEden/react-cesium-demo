@@ -32,6 +32,7 @@ class VectorLayer implements Layer{
     layerName: string = "";
     primitiveCollectionAdded: boolean = false;
     pointCollectionAdded: boolean = false;
+    isDisplay: boolean = true;
     constructor(viewer: Viewer) {
         this.layerId = uuidv4()
         this.viewer = viewer
@@ -233,7 +234,6 @@ class VectorLayer implements Layer{
         
     }
     updateLayer(config: Array<PageConfigItem>): void {
-        debugger
         // remove all first, then load again
         this.removeAllFeature()
         
@@ -245,7 +245,17 @@ class VectorLayer implements Layer{
         this.addNewFeature(features, config)
     }
     switchLayerDisplay(): boolean {
-        return true
+        if(this.isDisplay){
+            this.primitiveCollection.show = false
+            this.pointPrimitiveCollection.show = false
+            this.isDisplay = false
+            return false
+        }else{
+            this.primitiveCollection.show = true
+            this.pointPrimitiveCollection.show = true
+            this.isDisplay = true
+            return true
+        }
     }
 }
 

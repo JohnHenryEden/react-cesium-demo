@@ -10,6 +10,7 @@ interface Layer {
     features: Array<Feature>;
     layerId: string;
     layerName: string;
+    isDisplay: boolean;
     /**
      * Init layer using data, or no data
      * @param geojson 
