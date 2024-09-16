@@ -9,6 +9,7 @@ interface Layer {
     viewer: Viewer | any;
     features: Array<Feature>;
     layerId: string;
+    layerName: string;
     /**
      * Init layer using data, or no data
      * @param geojson 

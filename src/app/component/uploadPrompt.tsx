@@ -23,8 +23,10 @@ function getUploadFileGeoJson(e: any, setIsUploadDisplay: Function){
   if(files){
     let file = files[0]
     let reader = new FileReader()
+    let fileName = file.name
     reader.onload = function(){
-      let result = readGeoJson(this.result?.toString() || "")
+      debugger
+      let result = readGeoJson(this.result?.toString() || "", fileName)
       if(result !== 0){
         alert("File content is not GeoJSON format, please check uploaded file.") // todo replace with better alert
       }else {

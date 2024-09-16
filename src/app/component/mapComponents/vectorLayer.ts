@@ -29,6 +29,7 @@ class VectorLayer implements Layer{
     primitiveCollection: PrimitiveCollection
     pointPrimitiveCollection: PointPrimitiveCollection
     layerId: string;
+    layerName: string = "";
     primitiveCollectionAdded: boolean = false;
     pointCollectionAdded: boolean = false;
     constructor(viewer: Viewer) {

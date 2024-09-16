@@ -45,6 +45,24 @@
     padding: 0;
 }
 
+.layer-list-display{
+    background-color: #345;
+    position: absolute;
+    left: 0%;
+    top: 5%;
+    display: block;
+    height: fit-content;
+    width: 15%;
+    height: 95%;
+    margin: 0;
+    padding: 0;
+}
+
+.layer-list-item{
+    display: inline-block;
+    font-size: 26px;
+}
+
 .upload-prompt{
     display: none;
 }

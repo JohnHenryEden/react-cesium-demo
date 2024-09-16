@@ -26,6 +26,9 @@ export default function Home() {
       <MapContainer setIsEditDisplay={setIsEditDisplay}
         pageConfigItemList={pageConfigItemList}
         setPageConfigItemList={setPageConfigItemList}
+        layerList={layerList}
+        setLayerList={setLayerList}
+        setLayerDisplay={setIsLayerDisplay}
       ></MapContainer>
 
       <LayerList

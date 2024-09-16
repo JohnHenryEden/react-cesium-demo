@@ -34,6 +34,8 @@ let billboards: Billboard;
 let layers: Array<Layer> = []
 let pConfigItemList: Array<PageConfigItem>
 let setPConfigItemList: Function
+let setLayerDisplayFunc: Function
+let setLayerListFunc: Function
 
 /**
  * Drop and add a billboard
@@ -111,12 +113,13 @@ function loadPageConfig(
  * @param geoJsonContent
  * @returns success indicator for validation and external use, 0 for success, 1 for fail
  */
-export function readGeoJson(geoJsonContent: string): number{
+export function readGeoJson(geoJsonContent: string, fileName: string): number{
   try {
     let jsonObj = JSON.parse(geoJsonContent)
     if(jsonObj.type && jsonObj.type === "FeatureCollection"){
       
       let layer = new VectorLayer(viewer)
+      layer.layerName = fileName.split(".")[0]
       layer.init(jsonObj, defaultPolygonConfigItems)
 
       let elementConfList: Array<PageConfigItem> = [];
@@ -131,6 +134,8 @@ export function readGeoJson(geoJsonContent: string): number{
       let pageConfList = pConfigItemList;  
       pageConfList.push({name: "layer-vector-" + layers.length.toString(), value: elementConfList, type: ComponentTypes.VECTOR, id: layer.layerId})
       setPConfigItemList(pageConfList)
+      setLayerListFunc(layers)
+      setLayerDisplayFunc(true)
       return 0
     }
     return 1
@@ -148,13 +153,21 @@ export default function MapContainer({
   setIsEditDisplay,
   pageConfigItemList,
   setPageConfigItemList,
+  layerList,
+  setLayerList,
+  setLayerDisplay
 }: {
   setIsEditDisplay: Function;
   pageConfigItemList: Array<PageConfigItem>;
   setPageConfigItemList: Function;
+  layerList: Array<Layer>;
+  setLayerList: Function;
+  setLayerDisplay: Function;
 }) {
   pConfigItemList = pageConfigItemList;
   setPConfigItemList = setPageConfigItemList;
+  setLayerDisplayFunc = setLayerDisplay;
+  setLayerListFunc = setLayerList;
   const cesiumContainerRef = useRef<HTMLDivElement>(null);
   const [pageConfigList, setPageConfigList] = useState(pageConfigItemList)
   useEffect(() => {
