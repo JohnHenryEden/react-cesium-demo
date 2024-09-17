@@ -5,17 +5,24 @@ import { deepClone } from "@/utils/util";
 import { InputTypes } from "@/app/enums";
 import Layer from "./mapComponents/layer";
 import { Eye, EyeSlash, PencilSquare, Trash3 } from 'react-bootstrap-icons';
+let setIsLayerShowing: Function
+let setIsEditDisplayFunc: Function
+let isLayerShowing: boolean
+let pConfigItemList: Array<PageConfigItem>
+let setPConfigItemList: Function
+let setIdxInPageConfig: Function
 
-let isLayerShowing = true
 function getLayerListContent(layerList: Array<Layer>): React.JSX.Element[]{
   return layerList.map((layer, index) => {
     return <div className="layer-list-item" key={layer.layerId}>
-      {layer.layerName}
+      <div className="layer-title"> 
+        {layer.layerName}
+      </div>
       <div className="layer-btns">
         <div className="layer-btn" onClick={(e) => switchLayerDisplay(layer)}>
           {isLayerShowing ? <Eye /> : <EyeSlash />}
         </div>
-        <div className="layer-btn" onClick={(e) => showEditPanel(layer)}><PencilSquare /></div>
+        <div className="layer-btn" onClick={(e) => showEditPanel(index)}><PencilSquare /></div>
         <div className="layer-btn" onClick={(e) => deleteLayer(layer)}><Trash3 /></div>
       </div>
     </div>
@@ -26,16 +33,18 @@ function getLayerListContent(layerList: Array<Layer>): React.JSX.Element[]{
  * @param layer layer to be changed
  */
 function switchLayerDisplay(layer: Layer):boolean{
-  debugger
-  isLayerShowing = layer.switchLayerDisplay()
+  setIsLayerShowing(layer.switchLayerDisplay())
   return isLayerShowing
 }
 /**
  * Show edit panel for layer
- * @param layer layer to be changed
+ * @param index layer index for it to be edited
  */
-function showEditPanel(layer: Layer){
-  
+function showEditPanel(index: number){
+  debugger
+  // reset the index so the edit panel correctly reflect the layer to change
+  setIdxInPageConfig(index)
+  setIsEditDisplayFunc(true)
 }
 /**
  * Delete layer, release memory
@@ -51,15 +60,31 @@ export default function LayerList({
   layerList,
   layerDisplay,
   setLayerList,
-  setLayerDisplay
+  setLayerDisplay,
+  setIsEditDisplay,
+  pageConfigItemList,
+  setPageConfigItemList,
+  setIndexInPageConfig
 }: {
   layerList: Array<Layer>;
   layerDisplay: boolean;
   setLayerList: Function;
   setLayerDisplay: Function;
+  setIsEditDisplay: Function;
+  pageConfigItemList: Array<PageConfigItem>;
+  setPageConfigItemList: Function;
+  setIndexInPageConfig: Function
 }) {
+  
+  let [isLayerShow, setIsLayerShow] = useState(true)
+  setIsEditDisplayFunc = setIsEditDisplay
+  isLayerShowing = isLayerShow
+  setIsLayerShowing = setIsLayerShow
+  pConfigItemList = pageConfigItemList
+  setPConfigItemList = setPageConfigItemList
+  setIdxInPageConfig = setIndexInPageConfig
   let layerListContent = getLayerListContent(layerList)
-  return (layerDisplay && 
+  return (layerDisplay ? 
     <div className={"layer-list-display"}>
     <div
       className="close-button"
@@ -76,6 +101,15 @@ export default function LayerList({
       Layers
     </div>
     {layerListContent}
+    </div>
+    :
+    <div
+      className="open-button"
+      onClick={(e) => {
+        setLayerDisplay(true);
+      }}
+    >
+      {">>"}
     </div>
   );
 }

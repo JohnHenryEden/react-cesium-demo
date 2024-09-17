@@ -16,6 +16,7 @@ export default function Home() {
   const [layerList, setLayerList] = useState([]);
   const [pageConfigItemList, setPageConfigItemList] = useState(new Array<PageConfigItem>());
   const [functionName, setFunctionName] = useState("");
+  const [indexInPageConfig, setIndexInPageConfig] = useState(0);
 
   return (
     <main className="base-comp">
@@ -36,6 +37,10 @@ export default function Home() {
          layerDisplay={isLayerDisplay}
          setLayerList={setLayerList}
          setLayerDisplay={setIsLayerDisplay}
+         setIsEditDisplay={setIsEditDisplay}
+         pageConfigItemList={pageConfigItemList}
+         setPageConfigItemList={setPageConfigItemList}
+         setIndexInPageConfig={setIndexInPageConfig}
       ></LayerList>
 
       <UploadPrompt isDisplay={isUploadDisplay}
@@ -48,6 +53,8 @@ export default function Home() {
         setIsEditDisplay={setIsEditDisplay}
         pageConfigItemList={pageConfigItemList}
         setPageConfigItemList={setPageConfigItemList}
+        indexInPageConfig={indexInPageConfig}
+        setIndexInPageConfig={setIndexInPageConfig}
       ></ConfigList>
     </main>
   );

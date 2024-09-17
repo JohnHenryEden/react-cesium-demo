@@ -120,12 +120,16 @@ export default function ConfigList({
   isDisplay,
   setIsEditDisplay,
   pageConfigItemList,
-  setPageConfigItemList
+  setPageConfigItemList,
+  indexInPageConfig,
+  setIndexInPageConfig
 }: {
   isDisplay: boolean;
   setIsEditDisplay: Function;
   pageConfigItemList: Array<PageConfigItem>
   setPageConfigItemList: Function
+  indexInPageConfig: number,
+  setIndexInPageConfig: Function
 }) {
   const [configItemList, setConfigItemList] = useState<Array<Config>>([]);
   let lastConfig = pageConfigItemList[pageConfigItemList.length - 1];
@@ -141,14 +145,19 @@ export default function ConfigList({
         configItemList.push(configObj)
     })
   }
-  let configElements = getConfigItemTemplate(
+  let configElements = null;
+  if(pageConfigItemList.length > 0){
+    
+  setIndexInPageConfig(pageConfigItemList.length - 1)
+  configElements = getConfigItemTemplate(
       pageConfigItemList,
       configItemList,
       setConfigItemList,
       setPageConfigItemList,
-      pageConfigItemList.length - 1
+      indexInPageConfig
     );
 
+  }
   return (isDisplay && 
     <div className={"config-list-display"}>
     <div
