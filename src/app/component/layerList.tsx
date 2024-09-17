@@ -11,6 +11,7 @@ let isLayerShowing: boolean
 let pConfigItemList: Array<PageConfigItem>
 let setPConfigItemList: Function
 let setIdxInPageConfig: Function
+let setLayerListFunc: Function
 
 function getLayerListContent(layerList: Array<Layer>): React.JSX.Element[]{
   return layerList.map((layer, index) => {
@@ -23,7 +24,7 @@ function getLayerListContent(layerList: Array<Layer>): React.JSX.Element[]{
           {isLayerShowing ? <Eye /> : <EyeSlash />}
         </div>
         <div className="layer-btn" onClick={(e) => showEditPanel(index)}><PencilSquare /></div>
-        <div className="layer-btn" onClick={(e) => deleteLayer(layer)}><Trash3 /></div>
+        <div className="layer-btn" onClick={(e) => deleteLayer(layer, layerList)}><Trash3 /></div>
       </div>
     </div>
   })
@@ -41,7 +42,6 @@ function switchLayerDisplay(layer: Layer):boolean{
  * @param index layer index for it to be edited
  */
 function showEditPanel(index: number){
-  debugger
   // reset the index so the edit panel correctly reflect the layer to change
   setIdxInPageConfig(index)
   setIsEditDisplayFunc(true)
@@ -50,8 +50,9 @@ function showEditPanel(index: number){
  * Delete layer, release memory
  * @param layer layer to be removed
  */
-function deleteLayer(layer: Layer){
-  
+function deleteLayer(layer: Layer,layerList: Array<Layer>, index: number){
+  layer.removeAllFeature()
+  setLayerListFunc(layerList.splice(index, 1))
 }
 
 
