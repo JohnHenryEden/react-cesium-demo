@@ -36,6 +36,7 @@ let pConfigItemList: Array<PageConfigItem>
 let setPConfigItemList: Function
 let setLayerDisplayFunc: Function
 let setLayerListFunc: Function
+let setIndexInPageConfigFunc: Function
 
 /**
  * Drop and add a billboard
@@ -72,6 +73,8 @@ function handleDrop(event: any, pageConfigItemList: Array<PageConfigItem>, setPa
     let pageConfList = pageConfigItemList;
     pageConfList.push({name: "billboard-" + billboards.billboardCollection.length.toString(), value: elementConfList, type: ComponentTypes.BILLBOARD, id: billboardId})
     setPageConfigItemList(pageConfList)
+    
+    setIndexInPageConfigFunc(pageConfigItemList.length - 1)
 
   }
 }
@@ -136,6 +139,8 @@ export function readGeoJson(geoJsonContent: string, fileName: string): number{
       setPConfigItemList(pageConfList)
       setLayerListFunc(layers)
       setLayerDisplayFunc(true)
+      debugger
+      setIndexInPageConfigFunc(pageConfList.length - 1)
       return 0
     }
     return 1
@@ -155,7 +160,8 @@ export default function MapContainer({
   setPageConfigItemList,
   layerList,
   setLayerList,
-  setLayerDisplay
+  setLayerDisplay,
+  setIndexInPageConfig
 }: {
   setIsEditDisplay: Function;
   pageConfigItemList: Array<PageConfigItem>;
@@ -163,11 +169,13 @@ export default function MapContainer({
   layerList: Array<Layer>;
   setLayerList: Function;
   setLayerDisplay: Function;
+  setIndexInPageConfig: Function;
 }) {
   pConfigItemList = pageConfigItemList;
   setPConfigItemList = setPageConfigItemList;
   setLayerDisplayFunc = setLayerDisplay;
   setLayerListFunc = setLayerList;
+  setIndexInPageConfigFunc = setIndexInPageConfig;
   const cesiumContainerRef = useRef<HTMLDivElement>(null);
   const [pageConfigList, setPageConfigList] = useState(pageConfigItemList)
   useEffect(() => {

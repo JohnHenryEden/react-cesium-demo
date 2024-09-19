@@ -16,7 +16,7 @@ export default function Home() {
   const [layerList, setLayerList] = useState([]);
   const [pageConfigItemList, setPageConfigItemList] = useState(new Array<PageConfigItem>());
   const [functionName, setFunctionName] = useState("");
-  const [indexInPageConfig, setIndexInPageConfig] = useState(0);
+  const [indexInPageConfig, setIndexInPageConfig] = useState(pageConfigItemList.length - 1);
 
   return (
     <main className="base-comp">
@@ -30,6 +30,7 @@ export default function Home() {
         layerList={layerList}
         setLayerList={setLayerList}
         setLayerDisplay={setIsLayerDisplay}
+        setIndexInPageConfig={setIndexInPageConfig}
       ></MapContainer>
 
       <LayerList

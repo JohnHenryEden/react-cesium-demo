@@ -64,11 +64,14 @@
     text-overflow: ellipsis;
     justify-content: space-between;
 }
+.selected{
+    background-color: #234;
+}
 .layer-title{
     overflow: hidden;
     white-space: nowrap;
     font-size: 22px;
-    max-width: 120px;
+    max-width: 180px;
     text-overflow: ellipsis;
 }
 .layer-btn{

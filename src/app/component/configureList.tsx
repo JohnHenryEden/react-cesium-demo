@@ -33,7 +33,7 @@ function getConfigItemTemplate(
   configItemList: Array<Config>,
   setConfigItemList: Function,
   setPageConfigItemList: Function,
-  indexInPageConfig: number,
+  pageConfigIndex: number,
 ) {
     return configItemList.map((item: Config, index: number) => {
         if(item.type.includes("file")){
@@ -48,7 +48,7 @@ function getConfigItemTemplate(
                         let fullList = deepClone(pageConfigItemList)
                         let localList = deepClone(configItemList)
                         localList[index].value = e.target.value;
-                        fullList[indexInPageConfig].value = localList
+                        fullList[pageConfigIndex].value = localList
                         setConfigItemList(localList)
                         setPageConfigItemList(fullList)
                     }}
@@ -68,7 +68,7 @@ function getConfigItemTemplate(
                   let fullList = deepClone(pageConfigItemList)
                   let localList = deepClone(configItemList)
                   localList[index].value = e.target.checked;
-                  fullList[indexInPageConfig].value = localList
+                  fullList[pageConfigIndex].value = localList
                   setConfigItemList(localList)
                   setPageConfigItemList(fullList)
                 }}
@@ -88,7 +88,7 @@ function getConfigItemTemplate(
                   let fullList = deepClone(pageConfigItemList)
                   let localList = deepClone(configItemList)
                   localList[index].value = parseFloat(e.target.value);
-                  fullList[indexInPageConfig].value = localList
+                  fullList[pageConfigIndex].value = localList
                   setConfigItemList(localList)
                   setPageConfigItemList(fullList)
                 }}
@@ -107,7 +107,7 @@ function getConfigItemTemplate(
                 let fullList = deepClone(pageConfigItemList)
                 let localList = deepClone(configItemList)
                 localList[index].value = e.target.value;
-                fullList[indexInPageConfig].value = localList
+                fullList[pageConfigIndex].value = localList
                 setConfigItemList(localList)
                 setPageConfigItemList(fullList)
               }}
@@ -131,7 +131,9 @@ export default function ConfigList({
   indexInPageConfig: number,
   setIndexInPageConfig: Function
 }) {
+  
   const [configItemList, setConfigItemList] = useState<Array<Config>>([]);
+  const [configElements, setConfigElements] = useState<React.JSX.Element[]>([]);
   let lastConfig = pageConfigItemList[pageConfigItemList.length - 1];
   if(configItemList.length !== 0){
     setConfigItemList([])
@@ -145,19 +147,16 @@ export default function ConfigList({
         configItemList.push(configObj)
     })
   }
-  let configElements = null;
-  if(pageConfigItemList.length > 0){
-    
-  setIndexInPageConfig(pageConfigItemList.length - 1)
-  configElements = getConfigItemTemplate(
+  useEffect(()=> {
+    // initial value
+    setConfigElements(getConfigItemTemplate(
       pageConfigItemList,
       configItemList,
       setConfigItemList,
       setPageConfigItemList,
       indexInPageConfig
-    );
-
-  }
+    ));
+  }, [indexInPageConfig])
   return (isDisplay && 
     <div className={"config-list-display"}>
     <div
