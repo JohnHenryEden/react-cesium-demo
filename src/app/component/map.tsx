@@ -73,9 +73,7 @@ function handleDrop(event: any, pageConfigItemList: Array<PageConfigItem>, setPa
     let pageConfList = pageConfigItemList;
     pageConfList.push({name: "billboard-" + billboards.billboardCollection.length.toString(), value: elementConfList, type: ComponentTypes.BILLBOARD, id: billboardId})
     setPageConfigItemList(pageConfList)
-    
     setIndexInPageConfigFunc(pageConfigItemList.length - 1)
-
   }
 }
 
@@ -176,6 +174,7 @@ export default function MapContainer({
   setLayerDisplayFunc = setLayerDisplay;
   setLayerListFunc = setLayerList;
   setIndexInPageConfigFunc = setIndexInPageConfig;
+  layers = layerList;
   const cesiumContainerRef = useRef<HTMLDivElement>(null);
   const [pageConfigList, setPageConfigList] = useState(pageConfigItemList)
   useEffect(() => {

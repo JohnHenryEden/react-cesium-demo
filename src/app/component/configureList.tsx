@@ -156,6 +156,7 @@ export default function ConfigList({
       setPageConfigItemList,
       indexInPageConfig
     ));
+    console.log(configElements)
   }, [indexInPageConfig])
   return (isDisplay && 
     <div className={"config-list-display"}>

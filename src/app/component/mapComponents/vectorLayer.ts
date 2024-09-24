@@ -234,15 +234,17 @@ class VectorLayer implements Layer{
         
     }
     updateLayer(config: Array<PageConfigItem>): void {
-        // remove all first, then load again
-        this.removeAllFeature()
-        
-        this.primitiveCollection = new PrimitiveCollection()
-        this.pointPrimitiveCollection = new PointPrimitiveCollection({
-            show: true
-        })
-        let features = featureCollection(this.features)
-        this.addNewFeature(features, config)
+        if(!this.primitiveCollection.isDestroyed() && !this.pointPrimitiveCollection.isDestroyed()){
+            // remove all first, then load again
+            this.removeAllFeature()
+            
+            this.primitiveCollection = new PrimitiveCollection()
+            this.pointPrimitiveCollection = new PointPrimitiveCollection({
+                show: true
+            })
+            let features = featureCollection(this.features)
+            this.addNewFeature(features, config)
+        }
     }
     switchLayerDisplay(): boolean {
         if(this.isDisplay){

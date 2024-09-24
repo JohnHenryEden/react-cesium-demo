@@ -62,7 +62,9 @@ function showEditPanel(index: number, setCurrLayer:Function){
  */
 function deleteLayer(layer: Layer,layerList: Array<Layer>){
   layer.removeAllFeature()
-  setLayerListFunc(layerList.filter(a => a.layerId !== layer.layerId))
+  layerList = layerList.filter(a => a.layerId !== layer.layerId)
+  setLayerListFunc(layerList);
+  setIdxInPageConfig(layerList.length - 1);
 }
 
 

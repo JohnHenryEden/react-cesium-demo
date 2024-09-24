@@ -38,11 +38,16 @@ class Billboard {
           id
         });
     }
-    removeBillboard(){
-
+    removeBillboard(id: string){
+        for (let index = 0; index < this.billboardCollection.length; index++) {
+            const billboard = this.billboardCollection.get(index);
+            if(billboard.id === id){
+                this.billboardCollection.remove(billboard)
+            }
+        }
     }
     removeAllBillboard(){
-
+        this.billboardCollection.removeAll()
     }
     /**
      * Update a billboard
