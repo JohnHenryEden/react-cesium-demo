@@ -35,39 +35,80 @@ function getConfigItemTemplate(
   setPageConfigItemList: Function,
   pageConfigIndex: number,
 ) {
-    return configItemList.map((item: Config, index: number) => {
-        if(item.type.includes("file")){
+    if(pageConfigItemList.length > 0){
+      return pageConfigItemList[pageConfigIndex].value.map((item: Config, index: number) => {
+          if(item.type.includes("file")){
+              return (
+                  <div className='conf-list-item' key={item.name}>
+                  {camelToNormal(item.name.split("_")[1], true)}:{item.value}
+                  <input
+                      className="list-input"
+                      type={item.type}
+                      defaultValue=""
+                      onChange={(e) => {
+                          let fullList = deepClone(pageConfigItemList)
+                          let localList = deepClone(configItemList)
+                          localList[index].value = e.target.value;
+                          fullList[pageConfigIndex].value = localList
+                          setConfigItemList(localList)
+                          setPageConfigItemList(fullList)
+                      }}
+                  ></input>
+                  </div>
+              ); 
+          }
+          if(typeof item.value === 'boolean'){
             return (
-                <div className='conf-list-item' key={index}>
-                {camelToNormal(item.name.split("_")[1], true)}:{item.value}
-                <input
-                    className="list-input"
-                    type={item.type}
-                    defaultValue=""
-                    onChange={(e) => {
-                        let fullList = deepClone(pageConfigItemList)
-                        let localList = deepClone(configItemList)
-                        localList[index].value = e.target.value;
-                        fullList[pageConfigIndex].value = localList
-                        setConfigItemList(localList)
-                        setPageConfigItemList(fullList)
-                    }}
-                ></input>
-                </div>
+              <div className='conf-list-item' key={item.name}>
+                  {camelToNormal(item.name.split("_")[1], true)}:{" "}
+                  <input
+                  className="list-input"
+                  type={item.type}
+                  checked={item.value}
+                  onChange={(e) => {
+                    let fullList = deepClone(pageConfigItemList)
+                    let localList = deepClone(configItemList)
+                    localList[index].value = e.target.checked;
+                    fullList[pageConfigIndex].value = localList
+                    setConfigItemList(localList)
+                    setPageConfigItemList(fullList)
+                  }}
+                  ></input>
+              </div>
+            );
+          }
+          if(item.type.includes("number")){
+            return (
+              <div className='conf-list-item' key={item.name}>
+                  {camelToNormal(item.name.split("_")[1], true)}:{" "}
+                  <input
+                  className="list-input"
+                  type={item.type}
+                  value={item.value}
+                  onChange={(e) => {
+                    let fullList = deepClone(pageConfigItemList)
+                    let localList = deepClone(configItemList)
+                    localList[index].value = parseFloat(e.target.value);
+                    fullList[pageConfigIndex].value = localList
+                    setConfigItemList(localList)
+                    setPageConfigItemList(fullList)
+                  }}
+                  ></input>
+              </div>
             ); 
-        }
-        if(typeof item.value === 'boolean'){
+          }
           return (
-            <div className='conf-list-item' key={index}>
+            <div className='conf-list-item' key={item.name}>
                 {camelToNormal(item.name.split("_")[1], true)}:{" "}
                 <input
                 className="list-input"
                 type={item.type}
-                checked={item.value}
+                value={item.value}
                 onChange={(e) => {
+                  item.value = e.target.value;
                   let fullList = deepClone(pageConfigItemList)
                   let localList = deepClone(configItemList)
-                  localList[index].value = e.target.checked;
+                  localList[index].value = e.target.value;
                   fullList[pageConfigIndex].value = localList
                   setConfigItemList(localList)
                   setPageConfigItemList(fullList)
@@ -75,46 +116,9 @@ function getConfigItemTemplate(
                 ></input>
             </div>
           );
-        }
-        if(item.type.includes("number")){
-          return (
-            <div className='conf-list-item' key={index}>
-                {camelToNormal(item.name.split("_")[1], true)}:{" "}
-                <input
-                className="list-input"
-                type={item.type}
-                defaultValue={item.value}
-                onChange={(e) => {
-                  let fullList = deepClone(pageConfigItemList)
-                  let localList = deepClone(configItemList)
-                  localList[index].value = parseFloat(e.target.value);
-                  fullList[pageConfigIndex].value = localList
-                  setConfigItemList(localList)
-                  setPageConfigItemList(fullList)
-                }}
-                ></input>
-            </div>
-          ); 
-        }
-        return (
-          <div className='conf-list-item' key={index}>
-              {camelToNormal(item.name.split("_")[1], true)}:{" "}
-              <input
-              className="list-input"
-              type={item.type}
-              defaultValue={item.value}
-              onChange={(e) => {
-                let fullList = deepClone(pageConfigItemList)
-                let localList = deepClone(configItemList)
-                localList[index].value = e.target.value;
-                fullList[pageConfigIndex].value = localList
-                setConfigItemList(localList)
-                setPageConfigItemList(fullList)
-              }}
-              ></input>
-          </div>
-        );
-    })
+      }) 
+    }
+    return null;
 }
 export default function ConfigList({
   isDisplay,
@@ -156,8 +160,8 @@ export default function ConfigList({
       setPageConfigItemList,
       indexInPageConfig
     ));
-    console.log(configElements)
-  }, [indexInPageConfig])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [indexInPageConfig, pageConfigItemList, configItemList])
   return (isDisplay && 
     <div className={"config-list-display"}>
     <div
