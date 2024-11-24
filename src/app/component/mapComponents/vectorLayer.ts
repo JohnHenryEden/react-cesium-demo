@@ -88,6 +88,7 @@ class VectorLayer implements Layer{
 
                 let entities = ds.entities.values
                 let polygonInstances = []
+                let polygonOutlineInstances = []
                 let polylineInstances = []
 
                 for (let index = 0; index < entities.length; index++) {
@@ -110,6 +111,27 @@ class VectorLayer implements Layer{
                                     id : this.layerId + "-" + index
                                 });
                                 polygonInstances.push(instance)
+                            }
+                        }
+                        debugger
+                        if(vectorConfig.outline){
+                            const hierarchy = entity.polygon?.hierarchy?.getValue(JulianDate.now())
+                            if(hierarchy){
+                                let geometry = new PolygonGeometry({
+                                    polygonHierarchy: hierarchy,
+                                    height: parseFloat(vectorConfig.height) || 0,
+                                    extrudedHeight: parseFloat(vectorConfig.extrudedHeight) || 0,
+                                    closeTop: vectorConfig.closeTop || true,
+                                    closeBottom: vectorConfig.closeBottom || true,
+                                })
+                                let polygonGeometry = PolygonGeometry.createGeometry(geometry)
+                                if(polygonGeometry){
+                                    let instance = new GeometryInstance({
+                                        geometry: polygonGeometry,
+                                        id : this.layerId + "-" + index
+                                    });
+                                    polygonOutlineInstances.push(instance)
+                                }
                             }
                         }
                     }

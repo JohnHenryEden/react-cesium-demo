@@ -9,6 +9,8 @@ interface Config {
   value: string | number | readonly string[] | boolean | undefined;
   type: string;
 }
+let lastConfig:PageConfigItem
+let configItemList: Array<Config>
 
 function camelToNormal(s: string, isFirstToCapital: boolean = false){
   let newStringCharArray = []
@@ -31,7 +33,6 @@ function camelToNormal(s: string, isFirstToCapital: boolean = false){
 function getConfigItemTemplate(
   pageConfigItemList: Array<PageConfigItem>,
   configItemList: Array<Config>,
-  setConfigItemList: Function,
   setPageConfigItemList: Function,
   pageConfigIndex: number,
 ) {
@@ -50,7 +51,7 @@ function getConfigItemTemplate(
                           let localList = deepClone(configItemList)
                           localList[index].value = e.target.value;
                           fullList[pageConfigIndex].value = localList
-                          setConfigItemList(localList)
+                          configItemList = localList
                           setPageConfigItemList(fullList)
                       }}
                   ></input>
@@ -70,7 +71,7 @@ function getConfigItemTemplate(
                     let localList = deepClone(configItemList)
                     localList[index].value = e.target.checked;
                     fullList[pageConfigIndex].value = localList
-                    setConfigItemList(localList)
+                    configItemList = localList
                     setPageConfigItemList(fullList)
                   }}
                   ></input>
@@ -90,7 +91,7 @@ function getConfigItemTemplate(
                     let localList = deepClone(configItemList)
                     localList[index].value = parseFloat(e.target.value);
                     fullList[pageConfigIndex].value = localList
-                    setConfigItemList(localList)
+                    configItemList = localList
                     setPageConfigItemList(fullList)
                   }}
                   ></input>
@@ -110,7 +111,7 @@ function getConfigItemTemplate(
                   let localList = deepClone(configItemList)
                   localList[index].value = e.target.value;
                   fullList[pageConfigIndex].value = localList
-                  setConfigItemList(localList)
+                  configItemList = localList
                   setPageConfigItemList(fullList)
                 }}
                 ></input>
@@ -135,33 +136,32 @@ export default function ConfigList({
   indexInPageConfig: number,
   setIndexInPageConfig: Function
 }) {
-  
-  const [configItemList, setConfigItemList] = useState<Array<Config>>([]);
   const [configElements, setConfigElements] = useState<React.JSX.Element[]>([]);
-  let lastConfig = pageConfigItemList[pageConfigItemList.length - 1];
-  if(configItemList.length !== 0){
-    setConfigItemList([])
+  lastConfig = pageConfigItemList[pageConfigItemList.length - 1];
+  if(configItemList && configItemList.length !== 0){
+    configItemList = []
   }
+  let lastConfigs:Array<Config> = [];
   if(lastConfig && lastConfig.value instanceof Array && lastConfig.value.length > 0 && configItemList.length === 0){
     lastConfig.value.forEach(item => {
         let configObj = {} as Config
         configObj.name = item.name
         configObj.value = item.value
         configObj.type = item.type || "text";
-        configItemList.push(configObj)
+        lastConfigs.push(configObj)
     })
   }
+  configItemList = lastConfigs;
   useEffect(()=> {
     // initial value
     setConfigElements(getConfigItemTemplate(
       pageConfigItemList,
       configItemList,
-      setConfigItemList,
       setPageConfigItemList,
       indexInPageConfig
     ));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [indexInPageConfig, pageConfigItemList, configItemList])
+  }, [indexInPageConfig, pageConfigItemList, configItemList, isDisplay])
   return (isDisplay && 
     <div className={"config-list-display"}>
     <div

@@ -22,7 +22,7 @@ import {
   BillboardCollection,
   Color,
   ImageryLayer,
-  OpenStreetMapImageryProvider,
+  IonImageryProvider,
   Ion
 } from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
@@ -137,7 +137,6 @@ export function readGeoJson(geoJsonContent: string, fileName: string): number{
       setPConfigItemList(pageConfList)
       setLayerListFunc(layers)
       setLayerDisplayFunc(true)
-      debugger
       setIndexInPageConfigFunc(pageConfList.length - 1)
       return 0
     }
@@ -185,9 +184,9 @@ export default function MapContainer({
       terrain: Terrain.fromWorldTerrain(),
       animation: false,
       baseLayerPicker: false,
-      baseLayer: new ImageryLayer(new OpenStreetMapImageryProvider({
-        url: "https://tile.openstreetmap.org/"
-      })),
+      baseLayer: ImageryLayer.fromProviderAsync(
+        IonImageryProvider.fromAssetId(3954), {}
+      ),
       // fullscreenButton: false,
       vrButton: false,
       geocoder: false,
