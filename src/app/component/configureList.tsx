@@ -137,22 +137,22 @@ export default function ConfigList({
   setIndexInPageConfig: Function
 }) {
   const [configElements, setConfigElements] = useState<React.JSX.Element[]>([]);
-  lastConfig = pageConfigItemList[pageConfigItemList.length - 1];
-  if(configItemList && configItemList.length !== 0){
-    configItemList = []
-  }
-  let lastConfigs:Array<Config> = [];
-  if(lastConfig && lastConfig.value instanceof Array && lastConfig.value.length > 0 && configItemList.length === 0){
-    lastConfig.value.forEach(item => {
-        let configObj = {} as Config
-        configObj.name = item.name
-        configObj.value = item.value
-        configObj.type = item.type || "text";
-        lastConfigs.push(configObj)
-    })
-  }
-  configItemList = lastConfigs;
   useEffect(()=> {
+    lastConfig = pageConfigItemList[pageConfigItemList.length - 1];
+    if(configItemList && configItemList.length !== 0){
+      configItemList = []
+    }
+    let lastConfigs:Array<Config> = [];
+    if(lastConfig && lastConfig.value instanceof Array && lastConfig.value.length > 0 && configItemList.length === 0){
+      lastConfig.value.forEach(item => {
+          let configObj = {} as Config
+          configObj.name = item.name
+          configObj.value = item.value
+          configObj.type = item.type || "text";
+          lastConfigs.push(configObj)
+      })
+    }
+    configItemList = lastConfigs;
     // initial value
     setConfigElements(getConfigItemTemplate(
       pageConfigItemList,
@@ -161,7 +161,7 @@ export default function ConfigList({
       indexInPageConfig
     ));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [indexInPageConfig, pageConfigItemList, configItemList, isDisplay])
+  }, [indexInPageConfig, pageConfigItemList, isDisplay])
   return (isDisplay && 
     <div className={"config-list-display"}>
     <div
