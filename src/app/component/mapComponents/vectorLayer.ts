@@ -16,7 +16,8 @@ import {
     Primitive,
     PolylineGeometry,
     PolylineMaterialAppearance,
-    PointPrimitiveCollection
+    PointPrimitiveCollection,
+    Cartographic
   } from "cesium";
 import Layer from "./layer";
 import { Feature, FeatureCollection } from "geojson";
@@ -113,22 +114,26 @@ class VectorLayer implements Layer{
                                 polygonInstances.push(instance)
                             }
                         }
-                        debugger
                         if(vectorConfig.outline){
                             const hierarchy = entity.polygon?.hierarchy?.getValue(JulianDate.now())
+                            const positions = hierarchy.positions;
+                            // set height
+                            for (let index = 0; index < positions.length; index++) {
+                                let cartoPosition = Cartographic.fromCartesian(positions[index]);
+                                cartoPosition.height = parseFloat(vectorConfig.height) || 0;
+                                positions[index] = Cartographic.toCartesian(cartoPosition);
+                                
+                            }
                             if(hierarchy){
-                                let geometry = new PolygonGeometry({
-                                    polygonHierarchy: hierarchy,
-                                    height: parseFloat(vectorConfig.height) || 0,
-                                    extrudedHeight: parseFloat(vectorConfig.extrudedHeight) || 0,
-                                    closeTop: vectorConfig.closeTop || true,
-                                    closeBottom: vectorConfig.closeBottom || true,
+                                let geometry = new PolylineGeometry({
+                                    positions: positions,
+                                    width: parseFloat(vectorConfig.outlineWidth) || 0,
                                 })
-                                let polygonGeometry = PolygonGeometry.createGeometry(geometry)
-                                if(polygonGeometry){
+                                let polygonOutlineGeometry = PolylineGeometry.createGeometry(geometry)
+                                if(polygonOutlineGeometry){
                                     let instance = new GeometryInstance({
-                                        geometry: polygonGeometry,
-                                        id : this.layerId + "-" + index
+                                        geometry: polygonOutlineGeometry,
+                                        id : this.layerId + "-" + index + "-Outline"
                                     });
                                     polygonOutlineInstances.push(instance)
                                 }
@@ -178,6 +183,16 @@ class VectorLayer implements Layer{
                         }
                     })
                 })
+                let outlineApperance = new PolylineMaterialAppearance({
+                    material: new Material({
+                        fabric : {
+                            type : 'Color',
+                            uniforms : {
+                                color : Color.fromCssColorString(vectorConfig.outlineColor || "#ff0000").withAlpha(parseFloat(vectorConfig.alpha) || 1)
+                            }
+                        }
+                    })
+                })
                 let polylineApperance = new PolylineMaterialAppearance({
                     material: new Material({
                         fabric : {
@@ -207,6 +222,29 @@ class VectorLayer implements Layer{
                             asynchronous: false
                         })
                         this.primitiveCollection.add(primitive)
+                    }
+                    if(polygonOutlineInstances.length > 0){
+                            
+                        if(vectorConfig.clampToGround){
+                            // clamp to ground primitive
+                            let groundPrimitive = new GroundPrimitive({
+                                geometryInstances: polygonOutlineInstances,
+                                appearance: outlineApperance,
+                                show: true,
+                                asynchronous: false
+                            })
+                            this.primitiveCollection.add(groundPrimitive)
+                        }else{
+                            // normal polygon
+                            let primitive = new Primitive({
+                                geometryInstances: polygonOutlineInstances,
+                                appearance: outlineApperance,
+                                show: true,
+                                asynchronous: false
+                            })
+                            this.primitiveCollection.add(primitive)
+                        }
+                        debugger
                     }
                 }
                 if(polylineInstances.length > 0){
