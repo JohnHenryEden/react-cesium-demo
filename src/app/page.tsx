@@ -40,6 +40,8 @@ export default function Home() {
         setLayerList={setLayerList}
         setLayerDisplay={setIsLayerDisplay}
         setIndexInPageConfig={setIndexInPageConfig}
+        popupPromptDisplay={promptDisplay}
+        popupFunctionName={popupFunctionName}
       ></MapContainer>
 
       <LayerList

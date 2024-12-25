@@ -23,7 +23,8 @@ import {
   Color,
   ImageryLayer,
   IonImageryProvider,
-  Ion
+  Ion,
+  defined,
 } from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { ComponentTypes } from "@/app/enums";
@@ -44,24 +45,17 @@ let setIndexInPageConfigFunc: Function
  * @param pageConfigItemList 
  * @param setPageConfigItemList 
  */
-function handleDrop(event: any, pageConfigItemList: Array<PageConfigItem>, setPageConfigItemList:Function): void {
+function handleDrop(event: React.DragEvent<HTMLDivElement>, pageConfigItemList: Array<PageConfigItem>, setPageConfigItemList:Function): void {
   event.preventDefault();
   if (viewer.scene && viewer.scene.pickPositionSupported) {
-    // Move point considering the width of list on the right
-    let widthDiff = window.innerWidth - viewer.container.clientWidth;
-    let currentPosition = new Cartesian2(
-      event.clientX - widthDiff,
-      event.clientY
-    );
     if(!billboards){
       billboards = new Billboard(viewer)
     }
-    let car3Position = viewer.scene.pickPosition(
-      currentPosition,
-      new Cartesian3()
-    );
+    let car3Position = getClickPosition(event);
     let billboardId = uuidv4();
-    billboards.addNewBillboard(defaultBillboardConfigItems, car3Position, billboardId)
+    if (car3Position) {
+      billboards.addNewBillboard(defaultBillboardConfigItems, car3Position, billboardId);
+    }
     let elementConfList: Array<PageConfigItem> = [];
     defaultBillboardConfigItems.forEach(element => {
         let newPageConfigItem = {} as PageConfigItem;
@@ -73,11 +67,66 @@ function handleDrop(event: any, pageConfigItemList: Array<PageConfigItem>, setPa
     let pageConfList = pageConfigItemList;
     pageConfList.push({name: "billboard-" + billboards.billboardCollection.length.toString(), value: elementConfList, type: ComponentTypes.BILLBOARD, id: billboardId})
     setPageConfigItemList(pageConfList)
-    debugger
     setIndexInPageConfigFunc(pageConfigItemList.length - 1)
   }
 }
-
+function getClickPosition(event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.DragEvent<HTMLDivElement>): Cartesian3 | undefined {
+  if (viewer.scene && viewer.scene.pickPositionSupported) {
+    let widthDiff = window.innerWidth - viewer.container.clientWidth;
+    let currentPosition = new Cartesian2(
+      event.clientX - widthDiff,
+      event.clientY
+    );
+    return viewer.scene.pickPosition(
+      currentPosition,
+      new Cartesian3()
+    );
+  }
+  return undefined;
+}
+/**
+ * Drop and add a billboard
+ * @param event 
+ * @param pageConfigItemList 
+ * @param setPageConfigItemList 
+ */
+function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>, pageConfigItemList: Array<PageConfigItem>, setPageConfigItemList:Function, setIsEditDisplay: Function, popupPromptDisplay: boolean, popupFunctionName: String): void {
+  event.preventDefault();
+  /**
+   * popup design: 
+   * 1. click on map
+   * 2. Check if clicked on a map object, if is, the popup is linked to map object(shares property and removed together). 
+   * 3. check popup type(image/html)
+   * 4. add popup
+   *  */ 
+  if (viewer.scene && viewer.scene.pickPositionSupported) {
+    // get click position, test if there's an object
+    let widthDiff = window.innerWidth - viewer.container.clientWidth;
+    let currentPosition = new Cartesian2(
+      event.clientX - widthDiff,
+      event.clientY
+    );
+    const pickedFeature = viewer.scene.pick(currentPosition);
+    if (defined(pickedFeature)) {
+      // TODO: its possible that its clicked on a billboard, that has a popup, if so, do the invoke popup subroutine.
+      if(popupPromptDisplay){
+        // add popup
+        // Bind popup to object
+        let pickedObject = pickedFeature.id;
+        // individual id is at the 5th index
+        let pickedObjectId = pickedObject.split("-")[5];
+        layers.forEach(layer => {
+          debugger
+        })
+      }
+    }else {
+      const worldPosition = getClickPosition(event);
+      if(popupPromptDisplay){
+        // add popup
+      }
+    }
+  }
+}
 /**
  * Load previously stored page configure array
  * @param viewer
@@ -138,7 +187,7 @@ export function readGeoJson(geoJsonContent: string, fileName: string): number{
       setPConfigItemList(pageConfList)
       setLayerListFunc(layers)
       setLayerDisplayFunc(true)
-      debugger
+      
       setIndexInPageConfigFunc(pageConfList.length - 1)
       return 0
     }
@@ -160,7 +209,9 @@ export default function MapContainer({
   layerList,
   setLayerList,
   setLayerDisplay,
-  setIndexInPageConfig
+  setIndexInPageConfig,
+  popupPromptDisplay,
+  popupFunctionName
 }: {
   setIsEditDisplay: Function;
   pageConfigItemList: Array<PageConfigItem>;
@@ -169,6 +220,8 @@ export default function MapContainer({
   setLayerList: Function;
   setLayerDisplay: Function;
   setIndexInPageConfig: Function;
+  popupPromptDisplay: boolean;
+  popupFunctionName: string;
 }) {
   pConfigItemList = pageConfigItemList;
   setPConfigItemList = setPageConfigItemList;
@@ -178,8 +231,9 @@ export default function MapContainer({
   layers = layerList;
   const cesiumContainerRef = useRef<HTMLDivElement>(null);
   const [pageConfigList, setPageConfigList] = useState(pageConfigItemList)
+  
+  
   useEffect(() => {
-      
     window.CESIUM_BASE_URL = "/Cesium";
     Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkZjEwYjdhYS1lYzQ4LTQ5M2EtYTg5My02MDhhMTE1YTJlYmYiLCJpZCI6MTA0MSwiaWF0IjoxNTI2Nzg4NTcwfQ.3T6RRTRCIXu08pYcznhkseiYsLRgQxI3eq4ziLMcvtY"
     viewer = new Viewer(cesiumContainerRef.current as Element, {
@@ -209,10 +263,7 @@ export default function MapContainer({
   }, []);
   useEffect(() => {  
     loadPageConfig(viewer, pageConfigItemList);
-  }, [pageConfigItemList])
-  useEffect(() => {  
-    loadPageConfig(viewer, pageConfigItemList);
-  }, [pageConfigList])
+  }, [pageConfigItemList, pageConfigList])
   return (
     <div
       id="mapContainer"
@@ -230,6 +281,9 @@ export default function MapContainer({
       onDrop={(e) => {
         handleDrop(e, pageConfigItemList, setPageConfigItemList);
         setIsEditDisplay(true);
+      }}
+      onClick={(e) => {
+        handleClick(e, pageConfigItemList, setPageConfigItemList, setIsEditDisplay, popupPromptDisplay, popupFunctionName);
       }}
     ></div>
   );

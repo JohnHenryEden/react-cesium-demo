@@ -27,6 +27,7 @@ import { featureCollection } from "@turf/turf";
 class VectorLayer implements Layer{
     viewer: Viewer;
     features: Feature[] = [];
+    propertyInstances: Map<String, Object> = new Map();
     primitiveCollection: PrimitiveCollection
     pointPrimitiveCollection: PointPrimitiveCollection
     layerId: string;
@@ -107,6 +108,7 @@ class VectorLayer implements Layer{
                             })
                             let polygonGeometry = PolygonGeometry.createGeometry(geometry)
                             if(polygonGeometry){
+                                this.propertyInstances.set(index.toString(), entity.properties?.getValue(JulianDate.now()))
                                 let instance = new GeometryInstance({
                                     geometry: polygonGeometry,
                                     id : this.layerId + "-" + index
@@ -122,7 +124,6 @@ class VectorLayer implements Layer{
                                 let cartoPosition = Cartographic.fromCartesian(positions[index]);
                                 cartoPosition.height = parseFloat(vectorConfig.height) || 0;
                                 positions[index] = Cartographic.toCartesian(cartoPosition);
-                                
                             }
                             if(hierarchy){
                                 let geometry = new PolylineGeometry({
@@ -150,6 +151,7 @@ class VectorLayer implements Layer{
                               });
                             const polylineGeometry = PolylineGeometry.createGeometry(polyline);
                             if(polylineGeometry){
+                                this.propertyInstances.set(index.toString(), entity.properties?.getValue(JulianDate.now()))
                                 let instance = new GeometryInstance({
                                     geometry: polylineGeometry,
                                     id : this.layerId + "-" + index
@@ -162,7 +164,9 @@ class VectorLayer implements Layer{
                     if(entity.billboard && entity.position){
                         let position = entity.position?.getValue(JulianDate.now())
                         if(position){
+                            this.propertyInstances.set(index.toString(), entity.properties?.getValue(JulianDate.now()))
                             this.pointPrimitiveCollection.add({
+                                id : this.layerId + "-" + index,
                                 color : Color.fromCssColorString(vectorConfig.color || "#ff0000").withAlpha(parseFloat(vectorConfig.alpha) || 1),
                                 outlineColor: Color.fromCssColorString(vectorConfig.outlineColor || "#000000").withAlpha(parseFloat(vectorConfig.alpha) || 1),
                                 outlineWidth: parseFloat(vectorConfig.alpha) || 1,
@@ -173,7 +177,7 @@ class VectorLayer implements Layer{
                         }
                     }
                 }
-                let apperance = new MaterialAppearance({
+                let appearance = new MaterialAppearance({
                     material: new Material({
                         fabric : {
                             type : 'Color',
@@ -208,7 +212,7 @@ class VectorLayer implements Layer{
                         // clamp to ground primitive
                         let groundPrimitive = new GroundPrimitive({
                             geometryInstances: polygonInstances,
-                            appearance: apperance,
+                            appearance: appearance,
                             show: true,
                             asynchronous: false
                         })
@@ -217,7 +221,7 @@ class VectorLayer implements Layer{
                         // normal polygon
                         let primitive = new Primitive({
                             geometryInstances: polygonInstances,
-                            appearance: apperance,
+                            appearance: appearance,
                             show: true,
                             asynchronous: false
                         })
@@ -244,7 +248,7 @@ class VectorLayer implements Layer{
                             })
                             this.primitiveCollection.add(primitive)
                         }
-                        debugger
+                        
                     }
                 }
                 if(polylineInstances.length > 0){

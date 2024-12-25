@@ -10,3 +10,8 @@ interface PageConfigItem{
     type: String | null | void | undefined
     id: String|void|undefined
 }
+
+interface propertyInstances{
+    property: Object,
+    instances: Array<String>
+}

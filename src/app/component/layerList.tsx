@@ -61,10 +61,13 @@ function showEditPanel(index: number, setCurrLayer:Function){
  * @param layer layer to be removed
  */
 function deleteLayer(layer: Layer,layerList: Array<Layer>){
-  debugger
+  
   layer.removeAllFeature()
   layerList = layerList.filter(a => a.layerId !== layer.layerId)
   pConfigItemList = pConfigItemList.filter(a => a.id !== layer.layerId)
+  if(pConfigItemList.length === 0){
+    setIsEditDisplayFunc(false)
+  }
   setLayerListFunc(layerList);
   setPConfigItemList(pConfigItemList);
   setIdxInPageConfig(layerList.length - 1);
