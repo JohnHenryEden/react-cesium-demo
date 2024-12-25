@@ -50,7 +50,7 @@ function switchLayerDisplay(layer: Layer, layerList: Array<Layer>):void{
  * @param index layer index for it to be edited
  */
 function showEditPanel(index: number, setCurrLayer:Function){
-  pConfigItemList
+  
   // reset the index so the edit panel correctly reflect the layer to change
   setIdxInPageConfig(index)
   setCurrLayer(index)
@@ -61,9 +61,12 @@ function showEditPanel(index: number, setCurrLayer:Function){
  * @param layer layer to be removed
  */
 function deleteLayer(layer: Layer,layerList: Array<Layer>){
+  debugger
   layer.removeAllFeature()
   layerList = layerList.filter(a => a.layerId !== layer.layerId)
+  pConfigItemList = pConfigItemList.filter(a => a.id !== layer.layerId)
   setLayerListFunc(layerList);
+  setPConfigItemList(pConfigItemList);
   setIdxInPageConfig(layerList.length - 1);
 }
 

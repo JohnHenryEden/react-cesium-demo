@@ -11,24 +11,50 @@ for(basicFunctions in BasicFunctionList){
 }
 let setUploadDisplay:Function
 let setFuncName:Function
+let setIsPromptDisplay:Function
+let localSetPromptContent:Function
+let localSetPopupFunctionName:Function
 
 function clickButton(item: string){
-    setUploadDisplay(true)
-    setFuncName(item)
+    switch (item) {
+        case BasicFunctionList.HTML_POPUP:
+            setIsPromptDisplay(true)
+            localSetPromptContent("Click at map location or layer object to set HTML Popup");
+            localSetPopupFunctionName(BasicFunctionList.HTML_POPUP)
+            break;
+        case BasicFunctionList.IMAGE_POPUP:
+            setIsPromptDisplay(true)
+            localSetPromptContent("Click at map location or layer object to set Image Popup");
+            localSetPopupFunctionName(BasicFunctionList.IMAGE_POPUP)
+            break;
+        default:
+            setUploadDisplay(true)
+            setFuncName(item)
+            break;
+    }
 }
 
 export default function FunctionList({
+    setPromptContent,
     setIsUploadDisplay,
-    setFunctionName
+    setUploadFunctionName,
+    setPopupFunctionName,
+    setPromptDisplay
   }: {
+    setPromptContent: Function;
     setIsUploadDisplay: Function;
-    setFunctionName: Function
+    setUploadFunctionName: Function;
+    setPopupFunctionName: Function;
+    setPromptDisplay: Function
   }){
 
     useEffect(() => {
         setUploadDisplay = setIsUploadDisplay;
-        setFuncName = setFunctionName;
-    }, [])
+        setFuncName = setUploadFunctionName;
+        setIsPromptDisplay = setPromptDisplay;
+        localSetPromptContent = setPromptContent;
+        localSetPopupFunctionName = setPopupFunctionName;
+    })
     return (
       <div className="function-list">
           {

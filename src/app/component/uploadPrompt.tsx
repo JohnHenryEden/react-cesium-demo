@@ -42,24 +42,24 @@ function getUploadFileGeoJson(e: any, setIsUploadDisplay: Function){
  * Upload/input data prompt
  * @param isDisplay if the prompt shows
  * @param setIsUploadDisplay function to set isDisplay
- * @param functionItem function name to determine the actual content
+ * @param uploadFunctionItem function name to determine the actual content
  * @returns 
  */
 export default function UploadPrompt({
     isDisplay,
     setIsEditDisplay,
     setIsUploadDisplay,
-    functionItem
+    uploadFunctionItem
   }: {
     isDisplay: boolean;
     setIsEditDisplay: Function
     setIsUploadDisplay: Function;
-    functionItem: string
+    uploadFunctionItem: string
   }){
     setEditDisplay = setIsEditDisplay;
     let functionContent:React.JSX.Element
 
-    switch(functionItem){
+    switch(uploadFunctionItem){
       case BasicFunctionList.LOAD_GEOJSON:
         functionContent = (
         <div>
@@ -84,7 +84,7 @@ export default function UploadPrompt({
         >
             X
         </div>
-        <div className="prompt-title">{functionItem}</div>
+        <div className="prompt-title">{uploadFunctionItem}</div>
         <div className="prompt-content">{functionContent}</div>
       </div>
     );

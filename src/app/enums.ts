@@ -17,8 +17,8 @@ export enum ComponentTypes {
 export enum BasicFunctionList {
     POINT_DRAG_DROP = "Drag & Drop Point Marker", 
     LOAD_GEOJSON = "Load GeoJSON file", 
-    IMAGE_POPUP = "Add Image Popup To Object",
-    HTML_POPUP = "Add HTML Popup To Object",
+    IMAGE_POPUP = "Add Image Popup",
+    HTML_POPUP = "Add HTML Popup",
     LOAD_GLTF = "Add GLTF Model",
     LOAD_THREEDTILES = "Add 3DTiles Service",
     LOAD_WMTS = "Add WMTS Service",

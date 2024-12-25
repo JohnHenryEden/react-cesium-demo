@@ -7,22 +7,31 @@ import ConfigList from "./component/configureList"
 import React, {useState} from 'react'
 import UploadPrompt from "./component/uploadPrompt"
 import LayerList from "./component/layerList"
+import PopupFunction from "./component/popupFunction"
 
 
 export default function Home() {
+  // UI display states
   const [isEditDisplay, setIsEditDisplay] = useState(false);
   const [isUploadDisplay, setIsUploadDisplay] = useState(false);
+  const [promptDisplay, setPromptDisplay] = useState(false);
+  const [promptContent, setPromptContent] = useState("");
   const [isLayerDisplay, setIsLayerDisplay] = useState(false);
+  // Global list items states
   const [layerList, setLayerList] = useState([]);
   const [pageConfigItemList, setPageConfigItemList] = useState(new Array<PageConfigItem>());
-  const [functionName, setFunctionName] = useState("");
+  const [popupFunctionName, setPopupFunctionName] = useState("");
+  const [uploadFunctionName, setUploadFunctionName] = useState("");
   const [indexInPageConfig, setIndexInPageConfig] = useState(pageConfigItemList.length - 1);
 
   return (
     <main className="base-comp">
       <FunctionList 
+        setPromptContent={setPromptContent}
         setIsUploadDisplay={setIsUploadDisplay}
-        setFunctionName={setFunctionName}
+        setUploadFunctionName={setUploadFunctionName}
+        setPopupFunctionName={setPopupFunctionName}
+        setPromptDisplay={setPromptDisplay}
       ></FunctionList>
       <MapContainer setIsEditDisplay={setIsEditDisplay}
         pageConfigItemList={pageConfigItemList}
@@ -47,8 +56,15 @@ export default function Home() {
       <UploadPrompt isDisplay={isUploadDisplay}
         setIsUploadDisplay={setIsUploadDisplay}
         setIsEditDisplay={setIsEditDisplay}
-        functionItem={functionName}
+        uploadFunctionItem={uploadFunctionName}
       ></UploadPrompt>
+
+      <PopupFunction 
+        setPromptDisplay={setPromptDisplay}
+        promptDisplay={promptDisplay}
+        promptContent={promptContent}
+        popupFunctionName={popupFunctionName}
+      ></PopupFunction>
 
       <ConfigList isDisplay={isEditDisplay}
         setIsEditDisplay={setIsEditDisplay}

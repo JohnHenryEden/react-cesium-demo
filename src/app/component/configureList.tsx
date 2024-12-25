@@ -37,6 +37,7 @@ function getConfigItemTemplate(
   pageConfigIndex: number,
 ) {
     if(pageConfigItemList.length > 0){
+      debugger
       return pageConfigItemList[pageConfigIndex].value.map((item: Config, index: number) => {
           if(item.type.includes("file")){
               return (

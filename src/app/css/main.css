@@ -23,11 +23,10 @@
     display: inline-block;
     height: fit-content;
     position: absolute;
-    width: 84%;
-    height: 4%;
+    width: 100%;
     margin: 0;
     padding: 0;
-    z-index: 9999;
+    z-index: 2;
 }
 .config-list{
     display: none;
@@ -43,6 +42,8 @@
     height: 100%;
     margin: 0;
     padding: 0;
+    
+    z-index: 3;
 }
 
 .layer-list-display{
@@ -96,6 +97,18 @@
     left: 39vw;
     background-color: #345;
 
+}
+
+.popup-prompt{
+    display: none;
+}
+
+.popup-prompt-display{
+    display: block;
+    position: absolute;
+    top: 5vh;
+    left: 1vw;
+    color: #fff;
 }
 
 .list-item{
@@ -162,6 +175,11 @@
     justify-content: center;
     align-items: center;
     margin-top: 80px;
+}
+.prompt-exit{
+    display: flex;
+    margin-top: 5px;
+    cursor: pointer;
 }
 .button{
     border: 1px solid white;

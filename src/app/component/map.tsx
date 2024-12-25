@@ -73,6 +73,7 @@ function handleDrop(event: any, pageConfigItemList: Array<PageConfigItem>, setPa
     let pageConfList = pageConfigItemList;
     pageConfList.push({name: "billboard-" + billboards.billboardCollection.length.toString(), value: elementConfList, type: ComponentTypes.BILLBOARD, id: billboardId})
     setPageConfigItemList(pageConfList)
+    debugger
     setIndexInPageConfigFunc(pageConfigItemList.length - 1)
   }
 }
@@ -137,6 +138,7 @@ export function readGeoJson(geoJsonContent: string, fileName: string): number{
       setPConfigItemList(pageConfList)
       setLayerListFunc(layers)
       setLayerDisplayFunc(true)
+      debugger
       setIndexInPageConfigFunc(pageConfList.length - 1)
       return 0
     }
