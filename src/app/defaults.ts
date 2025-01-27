@@ -2,6 +2,11 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export const defaultBillboardConfigItems = [{
+    name: "billboard_index",
+    value: 0,
+    valueList: new Array<number>(),
+    type: "radio", id: uuidv4()
+},{
     name: "billboard_color",
     value: "#ff0000",
     type: "color", id: uuidv4()
@@ -11,6 +16,18 @@ export const defaultBillboardConfigItems = [{
     type: "file", id: uuidv4()
 },{
     name: "billboard_size",
+    value: 1,
+    type: "number", id: uuidv4()
+},{
+    name: "billboard_lon",
+    value: 1,
+    type: "number", id: uuidv4()
+},{
+    name: "billboard_lat",
+    value: 1,
+    type: "number", id: uuidv4()
+},{
+    name: "billboard_height",
     value: 1,
     type: "number", id: uuidv4()
 }]

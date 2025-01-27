@@ -1,9 +1,10 @@
 // todo create a class for map layers, so other layer types use common functions from this class.
 
 import {
+  Cartesian3,
     Viewer,
   } from "cesium";
-import { Feature } from "geojson";
+import { Feature, FeatureCollection } from "geojson";
 
 interface Layer {
     viewer: Viewer | any;
@@ -17,13 +18,28 @@ interface Layer {
      * @param config display config for feature(s)
      * @returns Layer object
      */
-    init(geojson: Object | undefined, config: Array<PageConfigItem>): Layer
+    init(config: Array<PageConfigItem>, geojson?: FeatureCollection | undefined): Layer
+    /**
+     * Init layer using a position on map
+     * @param geojson 
+     * @param config display config for feature(s)
+     * @returns Layer object
+     */
+    init(config: Array<PageConfigItem>, position?: Cartesian3): Layer
     /**
      * Add a feature to the layer
      * @param geojson Spatial data in GeoJSON format
      * @param config display config for feature(s)
      */
-    addNewFeature(geojson: Object | undefined, config:Array<PageConfigItem>): void
+    addNewFeature(config:Array<PageConfigItem>, geojson: FeatureCollection | undefined): void
+
+    /**
+     * Add a point feature to the layer
+     * @param config display config for feature(s)
+     * @param position Position of the feature
+     * @param id ID of the layer
+     */
+    addNewFeature(config:Array<PageConfigItem>, position:Cartesian3): void
     
     /**
      * get feature by index

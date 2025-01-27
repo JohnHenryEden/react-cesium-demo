@@ -17,6 +17,7 @@ export default function Home() {
   const [promptDisplay, setPromptDisplay] = useState(false);
   const [promptContent, setPromptContent] = useState("");
   const [isLayerDisplay, setIsLayerDisplay] = useState(false);
+  const [isRefreshConfig, setIsRefreshConfig] = useState(false);
   // Global list items states
   const [layerList, setLayerList] = useState([]);
   const [pageConfigItemList, setPageConfigItemList] = useState(new Array<PageConfigItem>());
@@ -36,6 +37,8 @@ export default function Home() {
       <MapContainer setIsEditDisplay={setIsEditDisplay}
         pageConfigItemList={pageConfigItemList}
         setPageConfigItemList={setPageConfigItemList}
+        setIsRefreshConfig={setIsRefreshConfig}
+        isRefreshConfig={isRefreshConfig}
         layerList={layerList}
         setLayerList={setLayerList}
         setLayerDisplay={setIsLayerDisplay}
@@ -72,6 +75,8 @@ export default function Home() {
         setIsEditDisplay={setIsEditDisplay}
         pageConfigItemList={pageConfigItemList}
         setPageConfigItemList={setPageConfigItemList}
+        setIsRefreshConfig={setIsRefreshConfig}
+        isRefreshConfig={isRefreshConfig}
         indexInPageConfig={indexInPageConfig}
         setIndexInPageConfig={setIndexInPageConfig}
       ></ConfigList>

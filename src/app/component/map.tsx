@@ -25,9 +25,12 @@ import {
   IonImageryProvider,
   Ion,
   defined,
+  Cartographic,
+  Math as CMath,
 } from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { ComponentTypes } from "@/app/enums";
+import { deepClone } from "@/utils/util";
 
 // Define objects
 let viewer: Viewer;
@@ -38,6 +41,47 @@ let setPConfigItemList: Function
 let setLayerDisplayFunc: Function
 let setLayerListFunc: Function
 let setIndexInPageConfigFunc: Function
+let setIsRefreshConfigFunc: Function
+let isRefreshConfigVal: boolean
+
+function initializeBillboardConfig(billboardConfig: Array<PageConfigItem>, position: Cartesian3) {
+
+  let lonlat = Cartographic.fromCartesian(position);
+  lonlat.longitude = CMath.toDegrees(lonlat.longitude);
+  lonlat.latitude = CMath.toDegrees(lonlat.latitude);
+  if(billboardConfig.findIndex(value => value.name === "config_list") === -1){
+    billboardConfig.push({
+      name: "config_list",
+      configList: [],
+      value: undefined,
+      type: "hidden",
+      id: uuidv4()
+    })
+  }
+  billboardConfig.forEach(item => {
+    if(item.name === "billboard_lon"){
+      item.value = lonlat.longitude;
+    }
+    if(item.name === "billboard_lat"){
+      item.value = lonlat.latitude;
+    }
+    if(item.name === "billboard_height"){
+      item.value = lonlat.height;
+    }
+    if(item.name === "billboard_index"){
+      item.value = billboards.billboardCollection.length;
+      item.valueList?.push(item.value);
+    }
+  })
+  billboardConfig.forEach(item => {
+    if(item.name === "config_list"){
+      item.configList = item.configList || [];
+      let clone = deepClone(billboardConfig);
+      item.configList.push(clone);
+    }
+  })
+  return billboardConfig;
+}
 
 /**
  * Drop and add a billboard
@@ -50,24 +94,43 @@ function handleDrop(event: React.DragEvent<HTMLDivElement>, pageConfigItemList: 
   if (viewer.scene && viewer.scene.pickPositionSupported) {
     if(!billboards){
       billboards = new Billboard(viewer)
+      billboards.layerName = "Marker Points"
     }
     let car3Position = getClickPosition(event);
     let billboardId = uuidv4();
+    let billboardConfig = defaultBillboardConfigItems;
+    // initialization of config items
     if (car3Position) {
-      billboards.addNewBillboard(defaultBillboardConfigItems, car3Position, billboardId);
+      (billboardConfig as PageConfigItem[]) = initializeBillboardConfig(billboardConfig, car3Position);
+      billboards.init(billboardConfig, car3Position, billboardId);
+      let elementConfList: Array<PageConfigItem> = [];
+      billboardConfig.forEach(element => {
+          elementConfList.push(element)
+      });
+      // insert/update the relevant lists
+      if(layers.findIndex(value => value.layerId === billboardId) === -1){
+        layers.push(billboards)
+        let pageConfList = pageConfigItemList;
+        pageConfList.push({name: "billboard-" + billboardId, value: elementConfList, type: ComponentTypes.BILLBOARD, id: billboardId})
+        setLayerListFunc(layers)
+        setLayerDisplayFunc(true)
+        setPageConfigItemList(pageConfList)
+        setIndexInPageConfigFunc(pageConfigItemList.length - 1)
+      }else {
+        let pageConfList = pageConfigItemList;
+        let billboardIndex = 0;
+        pageConfList.forEach((item, index) => {
+          // should be ok, only single instance
+          if(item.type === "BILLBOARD"){
+            item.value = elementConfList
+            billboardIndex = index;
+          }
+        })
+        setPageConfigItemList(pageConfList)
+        setIndexInPageConfigFunc(billboardIndex)
+        setIsRefreshConfigFunc(!isRefreshConfigVal)
+      }
     }
-    let elementConfList: Array<PageConfigItem> = [];
-    defaultBillboardConfigItems.forEach(element => {
-        let newPageConfigItem = {} as PageConfigItem;
-        newPageConfigItem.name = element.name;
-        newPageConfigItem.value = element.value
-        newPageConfigItem.type = element.type
-        elementConfList.push(newPageConfigItem)
-    });
-    let pageConfList = pageConfigItemList;
-    pageConfList.push({name: "billboard-" + billboards.billboardCollection.length.toString(), value: elementConfList, type: ComponentTypes.BILLBOARD, id: billboardId})
-    setPageConfigItemList(pageConfList)
-    setIndexInPageConfigFunc(pageConfigItemList.length - 1)
   }
 }
 function getClickPosition(event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.DragEvent<HTMLDivElement>): Cartesian3 | undefined {
@@ -85,7 +148,7 @@ function getClickPosition(event: React.MouseEvent<HTMLDivElement, MouseEvent> | 
   return undefined;
 }
 /**
- * Drop and add a billboard
+ * Add a popup
  * @param event 
  * @param pageConfigItemList 
  * @param setPageConfigItemList 
@@ -171,7 +234,7 @@ export function readGeoJson(geoJsonContent: string, fileName: string): number{
       
       let layer = new VectorLayer(viewer)
       layer.layerName = fileName.split(".")[0]
-      layer.init(jsonObj, defaultPolygonConfigItems)
+      layer.init(defaultPolygonConfigItems, jsonObj)
 
       let elementConfList: Array<PageConfigItem> = [];
       defaultPolygonConfigItems.forEach(element => {
@@ -187,7 +250,6 @@ export function readGeoJson(geoJsonContent: string, fileName: string): number{
       setPConfigItemList(pageConfList)
       setLayerListFunc(layers)
       setLayerDisplayFunc(true)
-      
       setIndexInPageConfigFunc(pageConfList.length - 1)
       return 0
     }
@@ -206,6 +268,8 @@ export default function MapContainer({
   setIsEditDisplay,
   pageConfigItemList,
   setPageConfigItemList,
+  setIsRefreshConfig,
+  isRefreshConfig,
   layerList,
   setLayerList,
   setLayerDisplay,
@@ -216,6 +280,8 @@ export default function MapContainer({
   setIsEditDisplay: Function;
   pageConfigItemList: Array<PageConfigItem>;
   setPageConfigItemList: Function;
+  setIsRefreshConfig: Function;
+  isRefreshConfig: boolean;
   layerList: Array<Layer>;
   setLayerList: Function;
   setLayerDisplay: Function;
@@ -226,6 +292,8 @@ export default function MapContainer({
   pConfigItemList = pageConfigItemList;
   setPConfigItemList = setPageConfigItemList;
   setLayerDisplayFunc = setLayerDisplay;
+  setIsRefreshConfigFunc = setIsRefreshConfig;
+  isRefreshConfigVal = isRefreshConfig;
   setLayerListFunc = setLayerList;
   setIndexInPageConfigFunc = setIndexInPageConfig;
   layers = layerList;

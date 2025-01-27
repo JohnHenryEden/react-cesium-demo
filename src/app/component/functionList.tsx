@@ -34,6 +34,7 @@ function clickButton(item: string){
     }
 }
 
+// Function lists on the top of the page
 export default function FunctionList({
     setPromptContent,
     setIsUploadDisplay,
@@ -47,7 +48,6 @@ export default function FunctionList({
     setPopupFunctionName: Function;
     setPromptDisplay: Function
   }){
-
     useEffect(() => {
         setUploadDisplay = setIsUploadDisplay;
         setFuncName = setUploadFunctionName;

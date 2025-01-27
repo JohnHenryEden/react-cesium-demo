@@ -7,8 +7,10 @@ interface Config{
 interface PageConfigItem{
     name: string,
     value: Array<any> | any,
-    type: String | null | void | undefined
-    id: String|void|undefined
+    valueList?: Array<any>,
+    configList?: Array<Array<PageConfigItem>>
+    type: string
+    id: string|void|undefined
 }
 
 interface propertyInstances{

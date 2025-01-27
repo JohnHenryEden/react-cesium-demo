@@ -61,8 +61,8 @@ class VectorLayer implements Layer{
      * width: number, polyline width, polyline only.
      * @returns This VectorLayer object
      */
-    init(geojson: FeatureCollection | undefined, configs: Array<PageConfigItem>): Layer {
-        this.addNewFeature(geojson, configs)
+    init(config: Array<PageConfigItem>, geojson: FeatureCollection | Cartesian3 | undefined, position?: Cartesian3): Layer {
+        this.addNewFeature(config, geojson)
         return this
     }
     get(id: number): Feature | undefined {
@@ -71,7 +71,10 @@ class VectorLayer implements Layer{
     getAll(): Array<Feature> | undefined {
         return this.features
     }
-    addNewFeature(geojson: FeatureCollection | undefined, configs: Array<PageConfigItem>): void {
+    addNewFeature(configs: Array<PageConfigItem>, geojson: FeatureCollection | Cartesian3 | undefined): void {
+        if(geojson instanceof Cartesian3){
+            throw new Error("Wrong parameter type.")
+        }
         if(geojson && geojson.features){
             this.features = [...geojson.features]
         }
@@ -307,7 +310,7 @@ class VectorLayer implements Layer{
                 show: true
             })
             let features = featureCollection(this.features)
-            this.addNewFeature(features, config)
+            this.addNewFeature(config, features)
         }
     }
     switchLayerDisplay(): boolean {
